@@ -453,6 +453,18 @@ body .section:not(.section-dark):not(.section-alt):not(.section-gradient):not(.s
 .app-icon-liq{background:linear-gradient(135deg,#f59e0b,#d97706)}
 .app-icon-co2{background:linear-gradient(135deg,#34d399,#065f46)}
 
+/* ===== VIDEOJUEGOS ICONS ===== */
+.game-icon-snake{background:linear-gradient(135deg,#43e97b,#38f9d7);box-shadow:0 8px 24px rgba(67,233,123,.3)}
+.game-icon-tetris{background:linear-gradient(135deg,#667eea,#764ba2);box-shadow:0 8px 24px rgba(102,126,234,.3)}
+.game-icon-breakout{background:linear-gradient(135deg,#f093fb,#f5576c);box-shadow:0 8px 24px rgba(240,147,251,.3)}
+.game-icon-2048{background:linear-gradient(135deg,#fa709a,#fee140);box-shadow:0 8px 24px rgba(250,112,154,.3)}
+.game-icon-flappy{background:linear-gradient(135deg,#4facfe,#00f2fe);box-shadow:0 8px 24px rgba(79,172,254,.3)}
+.game-icon-mines{background:linear-gradient(135deg,#ff6b6b,#ee0979);box-shadow:0 8px 24px rgba(255,107,107,.3)}
+.game-icon-pong{background:linear-gradient(135deg,#30cfd0,#330867);box-shadow:0 8px 24px rgba(48,207,208,.3)}
+.game-icon-memory{background:linear-gradient(135deg,#f7971e,#ffd200);box-shadow:0 8px 24px rgba(247,151,30,.3)}
+.game-icon-asteroids{background:linear-gradient(135deg,#a18cd1,#fbc2eb);box-shadow:0 8px 24px rgba(161,140,209,.3)}
+.game-icon-pacman{background:linear-gradient(135deg,#fddb92,#d1fdff);box-shadow:0 8px 24px rgba(253,219,146,.3)}
+
 /* ===== FAQ ===== */
 .faq-container{max-width:800px}
 .faq-list{display:flex;flex-direction:column;gap:12px}

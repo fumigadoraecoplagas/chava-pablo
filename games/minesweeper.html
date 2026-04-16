@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Buscaminas Neon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{min-height:100%;font-family:'DM Sans',sans-serif;background:#050816;color:#fff;-webkit-tap-highlight-color:transparent;user-select:none}
+.top-bar{position:sticky;top:0;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:rgba(5,8,22,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.06);z-index:100}
+.top-bar a{color:rgba(255,255,255,.6);text-decoration:none;font-size:14px;display:flex;align-items:center;gap:6px;transition:color .2s}
+.top-bar a:hover{color:#ff6b6b}
+.top-bar .title{font-weight:700;font-size:16px;background:linear-gradient(135deg,#ff6b6b,#ee0979);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.top-bar .info{display:flex;gap:16px;font-size:14px;font-weight:600;color:rgba(255,255,255,.7)}
+.top-bar .info span{display:flex;align-items:center;gap:5px}
+.top-bar .info i{font-size:12px;color:#ff6b6b}
+
+.game-wrap{display:flex;flex-direction:column;align-items:center;padding:16px 8px 40px}
+.grid{display:inline-grid;gap:2px;padding:4px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06)}
+.cell{display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;border-radius:6px;cursor:pointer;transition:background .12s,transform .1s;position:relative}
+.cell.unrevealed{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}
+.cell.unrevealed:hover{background:rgba(255,255,255,.1)}
+.cell.unrevealed:active{transform:scale(.93)}
+.cell.revealed{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.04);cursor:default}
+.cell.mine-hit{background:rgba(239,68,68,.25)!important;border-color:rgba(239,68,68,.3)!important}
+.cell .fa-flag{color:#ff6b6b;font-size:13px;animation:popIn .2s ease}
+.cell .fa-bomb{color:#ef4444;font-size:14px}
+.cell.n1{color:#3b82f6}.cell.n2{color:#10b981}.cell.n3{color:#ef4444}.cell.n4{color:#1d4ed8}
+.cell.n5{color:#991b1b}.cell.n6{color:#0d9488}.cell.n7{color:#374151}.cell.n8{color:#6b7280}
+
+@keyframes popIn{0%{transform:scale(0)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+@keyframes revealPop{0%{transform:scale(.8);opacity:0}100%{transform:scale(1);opacity:1}}
+.cell.just-revealed{animation:revealPop .15s ease}
+
+.overlay{position:fixed;inset:0;background:rgba(5,8,22,.88);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;z-index:200;opacity:1;transition:opacity .3s}
+.overlay.hidden{opacity:0;pointer-events:none}
+.overlay-card{text-align:center;padding:40px 32px;border-radius:24px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);max-width:400px;width:90%}
+.overlay-card h1{font-size:28px;font-weight:700;margin-bottom:8px;background:linear-gradient(135deg,#ff6b6b,#ee0979);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.overlay-card .subtitle{color:rgba(255,255,255,.5);font-size:14px;margin-bottom:24px;line-height:1.6}
+.overlay-card .final-score{font-size:56px;font-weight:700;background:linear-gradient(135deg,#ff6b6b,#ee0979);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
+.overlay-card .best{font-size:14px;color:rgba(255,255,255,.4);margin-bottom:24px}
+.overlay-card .win-text{font-size:20px;font-weight:700;color:#10b981;margin-bottom:4px}
+
+.diff-btns{display:flex;gap:10px;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
+.diff-btn{padding:10px 20px;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(255,255,255,.04);color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s}
+.diff-btn:hover,.diff-btn.active{background:linear-gradient(135deg,#ff6b6b,#ee0979);border-color:transparent;color:#fff}
+.diff-btn .sub{display:block;font-size:11px;font-weight:400;color:rgba(255,255,255,.5);margin-top:2px}
+.diff-btn:hover .sub,.diff-btn.active .sub{color:rgba(255,255,255,.8)}
+
+.btn-play{display:inline-flex;align-items:center;gap:8px;padding:14px 36px;border:none;border-radius:14px;background:linear-gradient(135deg,#ff6b6b,#ee0979);color:#fff;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 0 24px rgba(238,9,121,.3)}
+.btn-play:hover{transform:scale(1.04);box-shadow:0 0 32px rgba(238,9,121,.5)}
+.btn-play:active{transform:scale(.97)}
+.back-link{display:inline-block;margin-top:16px;color:rgba(255,255,255,.4);text-decoration:none;font-size:13px;transition:color .2s}
+.back-link:hover{color:#ff6b6b}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="../index.html#juegos"><i class="fas fa-arrow-left"></i> Volver</a>
+  <span class="title">Buscaminas</span>
+  <div class="info">
+    <span><i class="fas fa-bomb"></i> <span id="mineCount">0</span></span>
+    <span><i class="fas fa-clock"></i> <span id="timer">0</span></span>
+  </div>
+</div>
+
+<div class="game-wrap">
+  <div class="grid" id="grid"></div>
+</div>
+
+<div class="overlay" id="startOverlay">
+  <div class="overlay-card">
+    <h1><i class="fas fa-bomb"></i> Buscaminas</h1>
+    <p class="subtitle">Revela todas las celdas sin pisar una mina.<br>Clic derecho o mantener presionado para poner bandera.</p>
+    <div class="diff-btns">
+      <button class="diff-btn active" data-diff="easy">Facil<span class="sub">9x9 &middot; 10 minas</span></button>
+      <button class="diff-btn" data-diff="medium">Medio<span class="sub">12x12 &middot; 30 minas</span></button>
+      <button class="diff-btn" data-diff="hard">Dificil<span class="sub">16x16 &middot; 50 minas</span></button>
+    </div>
+    <button class="btn-play" id="btnStart"><i class="fas fa-play"></i> Jugar</button>
+  </div>
+</div>
+
+<div class="overlay hidden" id="gameOverOverlay">
+  <div class="overlay-card">
+    <div id="resultTitle"></div>
+    <div class="final-score" id="finalTime">0</div>
+    <div class="best" id="bestText"></div>
+    <button class="btn-play" id="btnRestart"><i class="fas fa-redo"></i> Jugar de nuevo</button>
+    <br><a href="../index.html#juegos" class="back-link"><i class="fas fa-th"></i> Volver a juegos</a>
+  </div>
+</div>
+
+<script>
+(function(){
+const DIFFS={easy:{rows:9,cols:9,mines:10},medium:{rows:12,cols:12,mines:30},hard:{rows:16,cols:16,mines:50}};
+let diff='easy',rows,cols,totalMines;
+let board,revealed,flagged,mineLocations;
+let firstClick,gameActive,won;
+let timerInterval,seconds;
+let revealedCount;
+
+const gridEl=document.getElementById('grid');
+const mineCountEl=document.getElementById('mineCount');
+const timerEl=document.getElementById('timer');
+const startOverlay=document.getElementById('startOverlay');
+const gameOverOverlay=document.getElementById('gameOverOverlay');
+const resultTitle=document.getElementById('resultTitle');
+const finalTime=document.getElementById('finalTime');
+const bestText=document.getElementById('bestText');
+
+// Difficulty buttons
+document.querySelectorAll('.diff-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    diff=btn.dataset.diff;
+  });
+});
+
+document.getElementById('btnStart').addEventListener('click',()=>startGame());
+document.getElementById('btnRestart').addEventListener('click',()=>{
+  gameOverOverlay.classList.add('hidden');
+  startOverlay.classList.remove('hidden');
+});
+
+function startGame(){
+  const d=DIFFS[diff];
+  rows=d.rows;cols=d.cols;totalMines=d.mines;
+  board=[];revealed=[];flagged=[];mineLocations=new Set();
+  firstClick=true;gameActive=true;won=false;revealedCount=0;
+  seconds=0;
+  clearInterval(timerInterval);
+  timerEl.textContent='0';
+  mineCountEl.textContent=totalMines;
+  startOverlay.classList.add('hidden');
+  gameOverOverlay.classList.add('hidden');
+  buildGrid();
+}
+
+function getCellSize(){
+  const maxW=(window.innerWidth-24)/cols;
+  const maxH=(window.innerHeight-120)/rows;
+  let s=Math.floor(Math.min(maxW,maxH));
+  return Math.max(s,28);
+}
+
+function buildGrid(){
+  const size=getCellSize();
+  gridEl.style.gridTemplateColumns=`repeat(${cols},${size}px)`;
+  gridEl.style.gridTemplateRows=`repeat(${rows},${size}px)`;
+  gridEl.innerHTML='';
+  for(let r=0;r<rows;r++){
+    board[r]=[];revealed[r]=[];flagged[r]=[];
+    for(let c=0;c<cols;c++){
+      board[r][c]=0;revealed[r][c]=false;flagged[r][c]=false;
+      const cell=document.createElement('div');
+      cell.className='cell unrevealed';
+      cell.style.width=size+'px';cell.style.height=size+'px';
+      cell.style.fontSize=Math.max(size*0.4,12)+'px';
+      cell.dataset.r=r;cell.dataset.c=c;
+      cell.addEventListener('click',onCellClick);
+      cell.addEventListener('contextmenu',onCellRightClick);
+      // Long press for mobile flag
+      let lpTimer;
+      cell.addEventListener('pointerdown',e=>{
+        lpTimer=setTimeout(()=>{e.preventDefault();toggleFlag(r,c);lpTimer=null;},500);
+      });
+      cell.addEventListener('pointerup',()=>{if(lpTimer)clearTimeout(lpTimer);});
+      cell.addEventListener('pointerleave',()=>{if(lpTimer)clearTimeout(lpTimer);});
+      gridEl.appendChild(cell);
+    }
+  }
+}
+
+function placeMines(safeR,safeC){
+  const safe=new Set();
+  for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){
+    const nr=safeR+dr,nc=safeC+dc;
+    if(nr>=0&&nr<rows&&nc>=0&&nc<cols)safe.add(nr*cols+nc);
+  }
+  let placed=0;
+  while(placed<totalMines){
+    const r=Math.floor(Math.random()*rows);
+    const c=Math.floor(Math.random()*cols);
+    const idx=r*cols+c;
+    if(!mineLocations.has(idx)&&!safe.has(idx)){
+      mineLocations.add(idx);
+      board[r][c]=-1;
+      placed++;
+    }
+  }
+  // Calculate numbers
+  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+    if(board[r][c]===-1)continue;
+    let count=0;
+    for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){
+      const nr=r+dr,nc=c+dc;
+      if(nr>=0&&nr<rows&&nc>=0&&nc<cols&&board[nr][nc]===-1)count++;
+    }
+    board[r][c]=count;
+  }
+}
+
+function onCellClick(e){
+  e.preventDefault();
+  if(!gameActive)return;
+  const r=+e.currentTarget.dataset.r,c=+e.currentTarget.dataset.c;
+  if(flagged[r][c]||revealed[r][c])return;
+  if(firstClick){
+    firstClick=false;
+    placeMines(r,c);
+    timerInterval=setInterval(()=>{seconds++;timerEl.textContent=seconds;},1000);
+  }
+  reveal(r,c);
+}
+
+function onCellRightClick(e){
+  e.preventDefault();
+  if(!gameActive)return;
+  const r=+e.currentTarget.dataset.r,c=+e.currentTarget.dataset.c;
+  if(revealed[r][c])return;
+  toggleFlag(r,c);
+}
+
+function toggleFlag(r,c){
+  if(!gameActive||revealed[r][c])return;
+  flagged[r][c]=!flagged[r][c];
+  const cell=getCell(r,c);
+  if(flagged[r][c]){
+    cell.innerHTML='<i class="fas fa-flag"></i>';
+  }else{
+    cell.innerHTML='';
+  }
+  const flagCount=[].concat(...flagged).filter(Boolean).length;
+  mineCountEl.textContent=totalMines-flagCount;
+}
+
+function getCell(r,c){
+  return gridEl.children[r*cols+c];
+}
+
+function reveal(r,c){
+  if(r<0||r>=rows||c<0||c>=cols||revealed[r][c]||flagged[r][c])return;
+  revealed[r][c]=true;
+  revealedCount++;
+  const cell=getCell(r,c);
+  cell.classList.remove('unrevealed');
+  cell.classList.add('revealed','just-revealed');
+
+  if(board[r][c]===-1){
+    // Hit mine
+    cell.classList.add('mine-hit');
+    cell.innerHTML='<i class="fas fa-bomb"></i>';
+    gameOver(false);
+    return;
+  }
+
+  if(board[r][c]>0){
+    cell.textContent=board[r][c];
+    cell.classList.add('n'+board[r][c]);
+  }else{
+    // Flood fill
+    for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){
+      if(dr===0&&dc===0)continue;
+      reveal(r+dr,c+dc);
+    }
+  }
+
+  // Win check
+  if(revealedCount===rows*cols-totalMines){
+    gameOver(true);
+  }
+}
+
+function gameOver(isWin){
+  gameActive=false;
+  won=isWin;
+  clearInterval(timerInterval);
+
+  if(!isWin){
+    // Reveal all mines
+    mineLocations.forEach(idx=>{
+      const r=Math.floor(idx/cols),c=idx%cols;
+      if(!revealed[r][c]){
+        const cell=getCell(r,c);
+        cell.classList.remove('unrevealed');
+        cell.classList.add('revealed','mine-hit');
+        cell.innerHTML='<i class="fas fa-bomb"></i>';
+      }
+    });
+  }
+
+  setTimeout(()=>{
+    const bestKey='minesweeper_best_'+diff;
+    const prevBest=parseInt(localStorage.getItem(bestKey))||0;
+    if(isWin){
+      resultTitle.innerHTML='<div class="win-text"><i class="fas fa-trophy"></i> Victoria!</div>';
+      finalTime.textContent=seconds+'s';
+      if(!prevBest||seconds<prevBest){
+        localStorage.setItem(bestKey,seconds);
+        bestText.textContent='Nuevo record!';
+      }else{
+        bestText.textContent='Mejor: '+prevBest+'s';
+      }
+    }else{
+      resultTitle.innerHTML='<h1><i class="fas fa-skull-crossbones"></i> Game Over</h1>';
+      finalTime.textContent=seconds+'s';
+      bestText.textContent=prevBest?'Mejor: '+prevBest+'s':'';
+    }
+    gameOverOverlay.classList.remove('hidden');
+  },isWin?300:800);
+}
+
+})();
+</script>
+</body>
+</html>
