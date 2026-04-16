@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FacturaFlow — Facturación Electrónica</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'DM Sans', sans-serif; background: #f1f5f9; min-height: 100vh; color: #1e293b; display: flex; flex-direction: column; }
+
+        .back-link {
+            position: fixed; top: 20px; left: 20px; z-index: 100;
+            color: #1e40af; text-decoration: none; font-weight: 500; font-size: 14px;
+            background: white; padding: 8px 16px; border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.2s;
+        }
+        .back-link:hover { background: #1e40af; color: white; }
+
+        .top-bar {
+            background: white; border-bottom: 1px solid #e2e8f0;
+            padding: 14px 40px; display: flex; align-items: center; justify-content: space-between;
+        }
+        .logo {
+            display: flex; align-items: center; gap: 10px;
+            font-size: 19px; font-weight: 700; color: #1e293b;
+        }
+        .logo .icon {
+            width: 36px; height: 36px; border-radius: 8px;
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 16px;
+        }
+        .logo span { color: #3b82f6; }
+        .top-bar-right { display: flex; gap: 16px; align-items: center; font-size: 13px; color: #64748b; }
+        .top-bar-right .user {
+            display: flex; align-items: center; gap: 8px;
+            background: #f1f5f9; padding: 6px 14px 6px 8px; border-radius: 20px;
+        }
+        .top-bar-right .user .avatar {
+            width: 28px; height: 28px; border-radius: 50%;
+            background: #3b82f6; color: white; display: flex;
+            align-items: center; justify-content: center; font-size: 12px; font-weight: 600;
+        }
+
+        .main {
+            flex: 1; display: grid; grid-template-columns: 1fr 1fr;
+            gap: 28px; padding: 32px 40px; padding-bottom: 80px;
+        }
+
+        .panel {
+            background: white; border-radius: 14px; padding: 28px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e2e8f0;
+        }
+        .panel h2 {
+            font-size: 18px; font-weight: 700; margin-bottom: 24px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .panel h2 .badge {
+            font-size: 11px; font-weight: 500; background: #dbeafe;
+            color: #1e40af; padding: 3px 10px; border-radius: 12px;
+        }
+
+        /* Form Styles */
+        .form-group { margin-bottom: 18px; }
+        .form-group label {
+            display: block; font-size: 12px; font-weight: 600;
+            color: #64748b; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .form-control {
+            width: 100%; padding: 10px 14px; border: 1.5px solid #e2e8f0;
+            border-radius: 8px; font-size: 14px; font-family: 'DM Sans', sans-serif;
+            color: #1e293b; background: #f8fafc; transition: border-color 0.2s;
+        }
+        .form-control:focus { outline: none; border-color: #3b82f6; background: white; }
+
+        select.form-control { appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+
+        /* Items Table */
+        .items-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .items-table th {
+            text-align: left; font-size: 11px; text-transform: uppercase;
+            letter-spacing: 0.5px; color: #64748b; padding: 10px 12px;
+            border-bottom: 2px solid #e2e8f0; font-weight: 600;
+        }
+        .items-table td {
+            padding: 10px 12px; border-bottom: 1px solid #f1f5f9; font-size: 13px;
+        }
+        .items-table .qty { text-align: center; }
+        .items-table .price, .items-table .total { text-align: right; }
+        .items-table .total { font-weight: 600; color: #1e293b; }
+        .items-table tbody tr:hover td { background: #f8fafc; }
+
+        .add-row-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 16px; border: 1.5px dashed #cbd5e1; border-radius: 8px;
+            background: none; color: #64748b; font-size: 13px; cursor: pointer;
+            font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+        }
+        .add-row-btn:hover { border-color: #3b82f6; color: #3b82f6; }
+
+        .totals-section {
+            border-top: 2px solid #e2e8f0; padding-top: 16px; margin-top: 8px;
+        }
+        .total-row {
+            display: flex; justify-content: space-between; padding: 6px 0;
+            font-size: 14px;
+        }
+        .total-row .label { color: #64748b; }
+        .total-row .value { font-weight: 600; }
+        .total-row.grand { font-size: 18px; border-top: 2px solid #1e293b; padding-top: 12px; margin-top: 8px; }
+        .total-row.grand .value { color: #1e40af; }
+
+        .generate-btn {
+            width: 100%; padding: 14px; border: none; border-radius: 10px;
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            color: white; font-size: 15px; font-weight: 600;
+            cursor: pointer; margin-top: 20px; font-family: 'DM Sans', sans-serif;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 16px rgba(30,64,175,0.3);
+        }
+        .generate-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(30,64,175,0.4); }
+
+        /* Invoice Preview */
+        .invoice-preview {
+            background: white; border: 1px solid #e2e8f0;
+            padding: 0; position: relative;
+        }
+        .invoice-inner {
+            padding: 36px; background: white; border: 1px solid #d1d5db;
+            border-radius: 4px; box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            position: relative;
+        }
+
+        .invoice-header {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            margin-bottom: 28px; padding-bottom: 20px; border-bottom: 3px solid #1e40af;
+        }
+        .invoice-company h2 { font-size: 18px; font-weight: 800; color: #1e293b; }
+        .invoice-company p { font-size: 11px; color: #64748b; line-height: 1.6; margin-top: 4px; }
+        .invoice-title { text-align: right; }
+        .invoice-title h1 {
+            font-size: 22px; font-weight: 800; color: #1e40af;
+            letter-spacing: 2px; margin-bottom: 4px;
+        }
+        .invoice-title .consecutive {
+            font-size: 16px; font-weight: 700; color: #1e293b;
+            background: #f1f5f9; padding: 4px 12px; border-radius: 6px;
+            display: inline-block;
+        }
+        .invoice-title .date { font-size: 12px; color: #64748b; margin-top: 8px; }
+
+        .invoice-parties {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+            margin-bottom: 24px;
+        }
+        .invoice-party h4 {
+            font-size: 10px; text-transform: uppercase; letter-spacing: 1px;
+            color: #94a3b8; margin-bottom: 6px;
+        }
+        .invoice-party p { font-size: 12px; color: #334155; line-height: 1.6; }
+        .invoice-party strong { color: #1e293b; }
+
+        .invoice-items { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+        .invoice-items th {
+            background: #1e40af; color: white; padding: 10px 14px;
+            font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
+            text-align: left;
+        }
+        .invoice-items th:nth-child(2) { text-align: center; }
+        .invoice-items th:nth-child(3), .invoice-items th:nth-child(4) { text-align: right; }
+        .invoice-items td { padding: 12px 14px; font-size: 12px; border-bottom: 1px solid #f1f5f9; }
+        .invoice-items td:nth-child(2) { text-align: center; }
+        .invoice-items td:nth-child(3), .invoice-items td:nth-child(4) { text-align: right; }
+
+        .invoice-totals {
+            display: flex; justify-content: flex-end;
+        }
+        .invoice-totals-inner { width: 220px; }
+        .inv-total-row {
+            display: flex; justify-content: space-between; padding: 5px 0;
+            font-size: 12px; color: #64748b;
+        }
+        .inv-total-row .val { color: #1e293b; font-weight: 600; }
+        .inv-total-row.grand {
+            font-size: 16px; font-weight: 700; color: #1e293b;
+            border-top: 2px solid #1e40af; padding-top: 10px; margin-top: 8px;
+        }
+        .inv-total-row.grand .val { color: #1e40af; }
+
+        .hacienda-stamp {
+            margin-top: 28px; padding: 16px; border: 2px solid #22c55e;
+            border-radius: 10px; display: flex; align-items: center; gap: 14px;
+            background: #f0fdf4;
+        }
+        .hacienda-stamp .check {
+            width: 42px; height: 42px; border-radius: 50%;
+            background: #22c55e; color: white; display: flex;
+            align-items: center; justify-content: center; font-size: 22px;
+            flex-shrink: 0;
+        }
+        .hacienda-stamp .text h4 { font-size: 13px; font-weight: 700; color: #166534; }
+        .hacienda-stamp .text p { font-size: 11px; color: #4ade80; margin-top: 2px; }
+        .hacienda-stamp .text .code { font-size: 10px; color: #64748b; margin-top: 4px; font-family: monospace; }
+
+        /* Status Bar */
+        .status-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: #1e293b; color: #e2e8f0; padding: 14px 40px;
+            font-size: 13px; display: flex; justify-content: center;
+            gap: 24px; z-index: 50;
+            box-shadow: 0 -4px 16px rgba(0,0,0,0.1);
+        }
+        .status-bar .item { display: flex; align-items: center; gap: 6px; }
+        .status-bar .item .dot { width: 8px; height: 8px; border-radius: 50%; }
+        .status-bar .item .dot-blue { background: #3b82f6; }
+        .status-bar .item .dot-green { background: #22c55e; }
+        .status-bar .item .dot-yellow { background: #fbbf24; }
+        .status-bar .item .dot-purple { background: #a78bfa; }
+        .status-bar .sep { color: #475569; }
+        .status-bar strong { color: white; }
+    </style>
+</head>
+<body>
+    <a href="../#portafolio" class="back-link">← Volver al portafolio</a>
+
+    <div class="top-bar">
+        <div class="logo">
+            <div class="icon">📋</div>
+            Factura<span>Flow</span>
+        </div>
+        <div class="top-bar-right">
+            <span>Ambiente: Producción</span>
+            <div class="user">
+                <div class="avatar">CR</div>
+                <span>Carlos Ramírez</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="main">
+        <!-- Left: Form -->
+        <div class="panel">
+            <h2>Nueva Factura <span class="badge">Borrador</span></h2>
+
+            <div class="form-group">
+                <label>Cliente</label>
+                <select class="form-control">
+                    <option selected>Corporación ABC Ltda. — 3-101-789456</option>
+                    <option>Distribuidora del Norte S.A.</option>
+                    <option>Tecnología Global CR</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Condición de venta</label>
+                <select class="form-control">
+                    <option selected>Crédito — 30 días</option>
+                    <option>Contado</option>
+                    <option>Crédito — 15 días</option>
+                </select>
+            </div>
+
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th>Descripción</th>
+                        <th>Cant.</th>
+                        <th>Precio</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Consultoría en transformación digital</td>
+                        <td class="qty">20 hrs</td>
+                        <td class="price">$85.00</td>
+                        <td class="total">$1,700.00</td>
+                    </tr>
+                    <tr>
+                        <td>Desarrollo de API REST personalizada</td>
+                        <td class="qty">1</td>
+                        <td class="price">$2,400.00</td>
+                        <td class="total">$2,400.00</td>
+                    </tr>
+                    <tr>
+                        <td>Soporte técnico mensual — Plan Pro</td>
+                        <td class="qty">3 meses</td>
+                        <td class="price">$350.00</td>
+                        <td class="total">$1,050.00</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <button class="add-row-btn">+ Agregar línea</button>
+
+            <div class="totals-section">
+                <div class="total-row">
+                    <span class="label">Subtotal</span>
+                    <span class="value">$5,150.00</span>
+                </div>
+                <div class="total-row">
+                    <span class="label">IVA (13%)</span>
+                    <span class="value">$669.50</span>
+                </div>
+                <div class="total-row grand">
+                    <span class="label">Total</span>
+                    <span class="value">$5,819.50</span>
+                </div>
+            </div>
+
+            <button class="generate-btn">Generar y Autorizar Factura</button>
+        </div>
+
+        <!-- Right: Invoice Preview -->
+        <div class="panel invoice-preview">
+            <h2>Vista Previa</h2>
+            <div class="invoice-inner">
+                <div class="invoice-header">
+                    <div class="invoice-company">
+                        <h2>LATAM Code Factory S.A.</h2>
+                        <p>Cédula: 3-101-456789<br>San José, Costa Rica<br>Tel: (506) 2222-3456<br>info@latamcodefactory.com</p>
+                    </div>
+                    <div class="invoice-title">
+                        <h1>FACTURA ELECTRÓNICA</h1>
+                        <div class="consecutive">FE-2026-001847</div>
+                        <div class="date">15 de abril, 2026</div>
+                    </div>
+                </div>
+
+                <div class="invoice-parties">
+                    <div class="invoice-party">
+                        <h4>Facturar a</h4>
+                        <p><strong>Corporación ABC Ltda.</strong><br>Cédula: 3-101-789456<br>Heredia, Costa Rica<br>contacto@corpabc.co.cr</p>
+                    </div>
+                    <div class="invoice-party">
+                        <h4>Detalles</h4>
+                        <p><strong>Condición:</strong> Crédito 30 días<br><strong>Moneda:</strong> USD<br><strong>Medio de pago:</strong> Transferencia<br><strong>Vencimiento:</strong> 15/05/2026</p>
+                    </div>
+                </div>
+
+                <table class="invoice-items">
+                    <thead>
+                        <tr>
+                            <th>Descripción</th>
+                            <th>Cant.</th>
+                            <th>Precio Unit.</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Consultoría en transformación digital</td>
+                            <td>20 hrs</td>
+                            <td>$85.00</td>
+                            <td>$1,700.00</td>
+                        </tr>
+                        <tr>
+                            <td>Desarrollo de API REST personalizada</td>
+                            <td>1</td>
+                            <td>$2,400.00</td>
+                            <td>$2,400.00</td>
+                        </tr>
+                        <tr>
+                            <td>Soporte técnico mensual — Plan Pro</td>
+                            <td>3 meses</td>
+                            <td>$350.00</td>
+                            <td>$1,050.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="invoice-totals">
+                    <div class="invoice-totals-inner">
+                        <div class="inv-total-row"><span>Subtotal</span><span class="val">$5,150.00</span></div>
+                        <div class="inv-total-row"><span>IVA 13%</span><span class="val">$669.50</span></div>
+                        <div class="inv-total-row grand"><span>Total</span><span class="val">$5,819.50</span></div>
+                    </div>
+                </div>
+
+                <div class="hacienda-stamp">
+                    <div class="check">✓</div>
+                    <div class="text">
+                        <h4>Autorizada por Hacienda</h4>
+                        <p>Documento aceptado — Ministerio de Hacienda de Costa Rica</p>
+                        <div class="code">Clave: 506150426001310145678900100001010000001847199999999</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <div class="item"><span class="dot dot-blue"></span> Facturas emitidas hoy: <strong>14</strong></div>
+        <span class="sep">·</span>
+        <div class="item"><span class="dot dot-green"></span> Autorizadas: <strong>14</strong></div>
+        <span class="sep">·</span>
+        <div class="item"><span class="dot dot-yellow"></span> Pendientes: <strong>0</strong></div>
+        <span class="sep">·</span>
+        <div class="item"><span class="dot dot-purple"></span> Monto total: <strong>$8,420.50</strong></div>
+    </div>
+</body>
+</html>

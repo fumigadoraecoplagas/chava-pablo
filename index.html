@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LATAM Code Factory — Software, IA y Automatización para PyMEs en Latinoamérica</title>
+<meta name="description" content="Fábrica de software para PyMEs latinoamericanas. Desarrollo de apps, automatización con IA y soluciones cloud a precios accesibles. Josué Cano & Pablo Paniagua." />
+<!-- Open Graph / WhatsApp / Facebook -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://latamcodefactory.web.app/" />
+<meta property="og:title" content="LATAM Code Factory — Software, IA y Automatización" />
+<meta property="og:description" content="Fábrica de software para PyMEs en Latinoamérica. Apps a medida, automatización con IA y ERPs completos desde $290 USD. Josué Cano & Pablo Paniagua." />
+<meta property="og:image" content="https://latamcodefactory.web.app/og-image.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:locale" content="es_LA" />
+<meta property="og:site_name" content="LATAM Code Factory" />
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="LATAM Code Factory — Software, IA y Automatización" />
+<meta name="twitter:description" content="Fábrica de software para PyMEs en Latinoamérica. Apps a medida, automatización con IA y ERPs desde $290 USD." />
+<meta name="twitter:image" content="https://latamcodefactory.web.app/og-image.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- CURSOR GLOW -->
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<!-- NAV -->
+<header class="nav" id="mainNav">
+  <div class="container nav-inner">
+    <a href="#top" class="brand">
+      <span class="brand-logo"><i class="fas fa-industry"></i></span>
+      <span class="brand-name">LATAM <b>Code Factory</b></span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="#servicios">Servicios</a>
+      <a href="#ventaja-ia">IA</a>
+      <a href="#portafolio">Portafolio</a>
+      <a href="#nosotros">Nosotros</a>
+      <a href="#precios">Precios</a>
+      <a href="#apps">Apps</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contacto" class="btn btn-primary btn-sm">Hablemos</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- HERO -->
+<section id="top" class="hero">
+  <div class="hero-bg">
+    <canvas id="heroCanvas"></canvas>
+    <div class="hero-grid-overlay"></div>
+  </div>
+  <div class="container hero-inner">
+    <div class="hero-copy">
+      <div class="hero-announce">
+        <span class="pulse-dot"></span>
+        <span>Aceptando nuevos proyectos para Q2 2026</span>
+        <i class="fas fa-arrow-right"></i>
+      </div>
+      <h1>Construimos el software que <span class="grad-text">transforma</span> PyMEs en Latinoamérica.</h1>
+      <p class="lead">Aplicaciones web y móviles, automatización con IA y soluciones cloud — a una fracción del costo de una agencia tradicional. Porque usamos IA para desarrollar más rápido y más barato.</p>
+      <div class="hero-cta">
+        <a href="#contacto" class="btn btn-primary btn-lg glow-btn"><i class="fas fa-rocket"></i> Diagnóstico gratuito</a>
+        <a href="#portafolio" class="btn btn-glass">Ver portafolio <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="hero-metrics">
+        <div class="metric">
+          <div class="metric-num" data-target="50" data-suffix="+">0</div>
+          <div class="metric-label">Proyectos entregados</div>
+        </div>
+        <div class="metric-sep"></div>
+        <div class="metric">
+          <div class="metric-num" data-target="15" data-suffix=" años">0</div>
+          <div class="metric-label">Experiencia combinada</div>
+        </div>
+        <div class="metric-sep"></div>
+        <div class="metric">
+          <div class="metric-num" data-target="6" data-suffix=" países">0</div>
+          <div class="metric-label">Con clientes activos</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="terminal float-a">
+        <div class="terminal-bar"><span></span><span></span><span></span><span class="terminal-title">~ terminal</span></div>
+        <div class="terminal-body" id="typewriter">
+          <div class="t-line"><span class="t-prompt">$</span> <span class="t-cmd">ai</span> <span class="t-arg">"construir CRM para cliente"</span></div>
+          <div class="t-line t-out"><span class="t-success">&#10003;</span> Analizando requerimientos...</div>
+          <div class="t-line t-out"><span class="t-success">&#10003;</span> Generando arquitectura...</div>
+          <div class="t-line t-out"><span class="t-success">&#10003;</span> Construyendo 12 módulos...</div>
+          <div class="t-line t-out t-highlight"><span class="t-success">&#10003;</span> Proyecto listo en 3 semanas.</div>
+        </div>
+      </div>
+      <div class="hero-card hero-card-1 float-b">
+        <div class="hc-icon"><i class="fas fa-shield-alt"></i></div>
+        <div><strong>99.9%</strong> uptime<br><small>Infraestructura cloud</small></div>
+      </div>
+      <div class="hero-card hero-card-2 float-c">
+        <div class="hc-icon hc-green"><i class="fas fa-dollar-sign"></i></div>
+        <div><strong>-70%</strong> costo<br><small>vs agencia tradicional</small></div>
+      </div>
+      <div class="hero-orbit">
+        <div class="orbit-ring"></div>
+        <div class="orbit-dot od-1"><i class="fab fa-react"></i></div>
+        <div class="orbit-dot od-2"><i class="fab fa-node-js"></i></div>
+        <div class="orbit-dot od-3"><i class="fab fa-python"></i></div>
+        <div class="orbit-dot od-4"><i class="fas fa-fire"></i></div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<section class="trust-bar">
+  <div class="container">
+    <div class="trust-marquee">
+      <div class="trust-track">
+        <div class="trust-item"><i class="fas fa-bug"></i><span>Control de plagas</span></div>
+        <div class="trust-item"><i class="fas fa-store"></i><span>Retail</span></div>
+        <div class="trust-item"><i class="fas fa-utensils"></i><span>Restaurantes</span></div>
+        <div class="trust-item"><i class="fas fa-truck"></i><span>Logística</span></div>
+        <div class="trust-item"><i class="fas fa-briefcase-medical"></i><span>Salud</span></div>
+        <div class="trust-item"><i class="fas fa-graduation-cap"></i><span>Educación</span></div>
+        <div class="trust-item"><i class="fas fa-industry"></i><span>Manufactura</span></div>
+        <div class="trust-item"><i class="fas fa-hand-holding-usd"></i><span>Fintech</span></div>
+        <div class="trust-item"><i class="fas fa-building"></i><span>Inmobiliarias</span></div>
+        <div class="trust-item"><i class="fas fa-gavel"></i><span>Legal</span></div>
+        <div class="trust-item"><i class="fas fa-spa"></i><span>Bienestar</span></div>
+        <div class="trust-item"><i class="fas fa-seedling"></i><span>Agro</span></div>
+        <!-- duplicate for seamless loop -->
+        <div class="trust-item"><i class="fas fa-bug"></i><span>Control de plagas</span></div>
+        <div class="trust-item"><i class="fas fa-store"></i><span>Retail</span></div>
+        <div class="trust-item"><i class="fas fa-utensils"></i><span>Restaurantes</span></div>
+        <div class="trust-item"><i class="fas fa-truck"></i><span>Logística</span></div>
+        <div class="trust-item"><i class="fas fa-briefcase-medical"></i><span>Salud</span></div>
+        <div class="trust-item"><i class="fas fa-graduation-cap"></i><span>Educación</span></div>
+        <div class="trust-item"><i class="fas fa-industry"></i><span>Manufactura</span></div>
+        <div class="trust-item"><i class="fas fa-hand-holding-usd"></i><span>Fintech</span></div>
+        <div class="trust-item"><i class="fas fa-building"></i><span>Inmobiliarias</span></div>
+        <div class="trust-item"><i class="fas fa-gavel"></i><span>Legal</span></div>
+        <div class="trust-item"><i class="fas fa-spa"></i><span>Bienestar</span></div>
+        <div class="trust-item"><i class="fas fa-seedling"></i><span>Agro</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NOSOTROS -->
+<section id="nosotros" class="section">
+  <div class="container">
+    <div class="sec-head">
+      <span class="eyebrow">Nosotros</span>
+      <h2>No somos una agencia. Somos <span class="grad-text">tus socios de tech</span></h2>
+      <p class="sec-sub">Los fundadores trabajan directamente contigo. Sin capas de project managers o juniors sin experiencia.</p>
+    </div>
+
+    <div class="founders-row">
+      <div class="founder-card">
+        <div class="founder-avatar-lg" style="background: linear-gradient(135deg,#667eea,#764ba2);">JC</div>
+        <h3>Josué Cano</h3>
+        <p class="founder-title">Co-fundador &middot; Desarrollo y Arquitectura</p>
+        <p class="founder-desc">Arquitecto de software con experiencia en sistemas de alta disponibilidad. Diseña, construye y supervisa cada línea de código. Si tu sistema funciona perfecto, es porque Josué lo revisó.</p>
+        <div class="founder-skills">
+          <span>React</span><span>Node.js</span><span>Firebase</span><span>AWS</span><span>Python</span>
+        </div>
+        <div class="founder-social">
+          <a href="#contacto"><i class="fas fa-envelope"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#"><i class="fab fa-github"></i></a>
+        </div>
+      </div>
+      <div class="founder-card">
+        <div class="founder-avatar-lg" style="background: linear-gradient(135deg,#f093fb,#f5576c);">PP</div>
+        <h3>Pablo Paniagua</h3>
+        <p class="founder-title">Co-fundador &middot; Estrategia y Producto</p>
+        <p class="founder-desc">Traduce lo que tu negocio necesita a soluciones tecnológicas concretas. Se asegura de que cada proyecto tenga sentido financiero y genere un retorno real y medible.</p>
+        <div class="founder-skills">
+          <span>Producto</span><span>UX</span><span>Ventas</span><span>Finanzas</span><span>Operaciones</span>
+        </div>
+        <div class="founder-social">
+          <a href="#contacto"><i class="fas fa-envelope"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="values-grid">
+      <div class="val"><div class="val-icon"><i class="fas fa-handshake"></i></div><h4>Trato directo</h4><p>Hablas con los dueños, no con un asistente.</p></div>
+      <div class="val"><div class="val-icon"><i class="fas fa-bolt"></i></div><h4>Entregas reales</h4><p>Demo funcional cada semana. Sin sorpresas.</p></div>
+      <div class="val"><div class="val-icon"><i class="fas fa-lock"></i></div><h4>Tu código es tuyo</h4><p>Sin dependencia. Si te vas, te llevas todo.</p></div>
+      <div class="val"><div class="val-icon"><i class="fas fa-globe-americas"></i></div><h4>LATAM first</h4><p>Entendemos tu mercado, tu regulación, tu zona horaria.</p></div>
+      <div class="val"><div class="val-icon"><i class="fas fa-shield-alt"></i></div><h4>Transparencia total</h4><p>Precio cerrado. Sin costos ocultos ni letra pequeña.</p></div>
+      <div class="val"><div class="val-icon"><i class="fas fa-seedling"></i></div><h4>Crecemos contigo</h4><p>El software que construimos escala con tu negocio.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- APPS GRATUITAS -->
+<section id="apps" class="section section-alt">
+  <div class="container">
+    <div class="sec-head">
+      <span class="eyebrow">Recursos</span>
+      <h2>Apps <span class="grad-text">gratuitas</span></h2>
+      <p class="sec-sub light">Herramientas utiles para tu dia a dia. Sin costo, sin registro.</p>
+    </div>
+    <div class="apps-grid">
+      <a href="apps/calculadora-aguinaldo.html" class="app-card" target="_blank">
+        <div class="app-icon"><i class="fas fa-calculator"></i></div>
+        <span class="app-name">Aguinaldo CR</span>
+        <span class="app-desc">Calcula tu decimotercer mes</span>
+      </a>
+      <a href="apps/calculadora-aguinaldo-mx.html" class="app-card" target="_blank">
+        <div class="app-icon app-icon-mx"><i class="fas fa-calculator"></i></div>
+        <span class="app-name">Aguinaldo MX</span>
+        <span class="app-desc">15 dias de ley + ISR</span>
+      </a>
+      <a href="apps/calculadora-co2.html" class="app-card" target="_blank">
+        <div class="app-icon app-icon-co2"><i class="fas fa-leaf"></i></div>
+        <span class="app-name">CO2 Auto</span>
+        <span class="app-desc">Emisiones de tu vehiculo</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEMA / SOLUCION -->
+<section class="section problem-section">
+  <div class="container">
+    <div class="sec-head">
+      <span class="eyebrow">El problema</span>
+      <h2>El software de calidad no debería costar <span class="grad-text">una fortuna</span></h2>
+    </div>
+    <div class="problem-grid">
+      <div class="problem-col">
+        <div class="prob-card prob-bad">
+          <div class="prob-header"><i class="fas fa-times-circle"></i> Sin nosotros</div>
+          <ul>
+            <li><i class="fas fa-times"></i> Agencias que cobran $30K+ por un sistema</li>
+            <li><i class="fas fa-times"></i> Freelancers que desaparecen a mitad del proyecto</li>
+            <li><i class="fas fa-times"></i> Meses de desarrollo sin ver resultados</li>
+            <li><i class="fas fa-times"></i> Software genérico que no se adapta a tu negocio</li>
+            <li><i class="fas fa-times"></i> Mantenimiento caro o inexistente</li>
+            <li><i class="fas fa-times"></i> Dependencia de un solo desarrollador</li>
+          </ul>
+        </div>
+      </div>
+      <div class="prob-vs">VS</div>
+      <div class="problem-col">
+        <div class="prob-card prob-good">
+          <div class="prob-header"><i class="fas fa-check-circle"></i> Con LATAM Code Factory</div>
+          <ul>
+            <li><i class="fas fa-check"></i> ERPs completos desde $4,900 USD</li>
+            <li><i class="fas fa-check"></i> Fundadores que te atienden directamente</li>
+            <li><i class="fas fa-check"></i> Entregas parciales cada semana</li>
+            <li><i class="fas fa-check"></i> 100% a la medida de tu operación</li>
+            <li><i class="fas fa-check"></i> Planes de soporte desde $49/mes</li>
+            <li><i class="fas fa-check"></i> Código documentado que es tuyo</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICIOS -->
+<section id="servicios" class="section section-dark">
+  <div class="container">
+    <div class="sec-head">
+      <span class="eyebrow light">Servicios</span>
+      <h2>Todo lo que tu empresa necesita para <span class="grad-text">digitalizarse</span></h2>
+      <p class="sec-sub light">Desde una landing hasta un ERP completo. No importa en qué etapa estés.</p>
+    </div>
+    <div class="services-grid">
+      <div class="srv" data-tilt>
+        <div class="srv-glow"></div>
+        <div class="srv-icon bg-grad-1"><i class="fas fa-laptop-code"></i></div>
+        <h3>Aplicaciones Web</h3>
+        <p>CRMs, portales, e-commerce, dashboards, intranets. Diseño moderno, rápido y responsive.</p>
+        <ul class="srv-list">
+          <li>React / Next.js / Vue</li>
+          <li>Firebase / AWS / Supabase</li>
+          <li>Login, roles y permisos</li>
+          <li>Panel de administración</li>
+        </ul>
+        <div class="srv-tag">Desde $1,490</div>
+      </div>
+
+      <div class="srv" data-tilt>
+        <div class="srv-glow"></div>
+        <div class="srv-icon bg-grad-2"><i class="fas fa-mobile-alt"></i></div>
+        <h3>Apps Móviles</h3>
+        <p>iOS y Android con una sola base de código. Nativas o PWA según lo que tu negocio necesite.</p>
+        <ul class="srv-list">
+          <li>React Native / Flutter</li>
+          <li>Offline-first</li>
+          <li>Push notifications</li>
+          <li>Publicación en stores</li>
+        </ul>
+        <div class="srv-tag">Desde $2,900</div>
+      </div>
+
+      <div class="srv" data-tilt>
+        <div class="srv-glow"></div>
+        <div class="srv-icon bg-grad-3"><i class="fas fa-robot"></i></div>
+        <h3>Automatización</h3>
+        <p>Eliminamos tareas repetitivas con flujos inteligentes que conectan todos tus sistemas.</p>
+        <ul class="srv-list">
+          <li>Bots de WhatsApp / email</li>
+          <li>Cobros y recordatorios</li>
+          <li>n8n / Make / custom</li>
+          <li>Integración con ERP/CRM</li>
+        </ul>
+        <div class="srv-tag">Desde $250</div>
+      </div>
+
+      <div class="srv" data-tilt>
+        <div class="srv-glow"></div>
+        <div class="srv-icon bg-grad-4"><i class="fas fa-brain"></i></div>
+        <h3>Soluciones con IA</h3>
+        <p>Chatbots inteligentes, análisis de documentos, generación de contenido y predicciones.</p>
+        <ul class="srv-list">
+          <li>Modelos de IA avanzados</li>
+          <li>Base de conocimiento inteligente</li>
+          <li>Asistentes virtuales 24/7</li>
+          <li>Análisis predictivo</li>
+        </ul>
+        <div class="srv-tag">Desde $390</div>
+      </div>
+
+      <div class="srv" data-tilt>
+        <div class="srv-glow"></div>
+        <div class="srv-icon bg-grad-5"><i class="fas fa-chart-pie"></i></div>
+        <h3>Dashboards & BI</h3>
+        <p>Visualiza tu negocio en tiempo real. KPIs, reportes y alertas automáticas que te ayudan a decidir.</p>
+        <ul class="srv-list">
+          <li>Reportes gerenciales</li>
+          <li>KPIs en tiempo real</li>
+          <li>Conexión a cualquier fuente</li>
+          <li>Alertas inteligentes</li>
+        </ul>
+        <div class="srv-tag">Desde $690</div>
+      </div>
+
+      <div class="srv" data-tilt>
+        <div class="srv-glow"></div>
+        <div class="srv-icon bg-grad-6"><i class="fas fa-server"></i></div>
+        <h3>ERPs a la Medida</h3>
+        <p>Contabilidad, inventario, RRHH, ventas, facturación electrónica. Todo integrado en un solo sistema.</p>
+        <ul class="srv-list">
+          <li>Multi-sucursal / multi-moneda</li>
+          <li>Facturación electrónica</li>
+          <li>Nómina y planilla</li>
+          <li>Inventario en tiempo real</li>
+        </ul>
+        <div class="srv-tag">Desde $4,900</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VENTAJA IA -->
+<section id="ventaja-ia" class="section section-gradient">
+  <div class="container">
+    <div class="sec-head">
+      <span class="eyebrow light">Nuestra ventaja</span>
+      <h2>Usamos inteligencia artificial para <span class="grad-text">bajar tus costos</span></h2>
+      <p class="sec-sub light">IA de última generación + ingenieros senior = software de primer mundo a precios de Latinoamérica.</p>
+    </div>
+    <div class="ia-grid">
+      <div class="ia-visual">
+        <div class="ia-terminal">
+          <div class="terminal-bar"><span></span><span></span><span></span><span class="terminal-title">ai assistant</span></div>
+          <div class="ia-lines">
+            <div class="ia-line" style="width:85%"></div>
+            <div class="ia-line" style="width:60%"></div>
+            <div class="ia-line" style="width:92%"></div>
+            <div class="ia-line" style="width:45%"></div>
+            <div class="ia-line" style="width:78%"></div>
+            <div class="ia-line bright" style="width:100%"></div>
+            <div class="ia-cursor"></div>
+          </div>
+        </div>
+        <div class="ia-badge ia-b1"><i class="fas fa-bolt"></i> 10x más rápido</div>
+        <div class="ia-badge ia-b2"><i class="fas fa-dollar-sign"></i> 70% menos costo</div>
+        <div class="ia-badge ia-b3"><i class="fas fa-bug"></i> Menos errores</div>
+      </div>
+      <div class="ia-content">
+        <div class="ia-item">
+          <div class="ia-num">01</div>
+          <div>
+            <h4>IA genera, humanos supervisan</h4>
+            <p>Usamos inteligencia artificial para generar código de alta calidad. Nuestros ingenieros senior revisan, optimizan y aseguran que todo funcione perfecto.</p>
+          </div>
+        </div>
+        <div class="ia-item">
+          <div class="ia-num">02</div>
+          <div>
+            <h4>Velocidad de agencia, precio de freelancer</h4>
+            <p>Lo que antes tomaba 3 meses ahora toma 3 semanas. Lo que costaba $30K ahora cuesta $4K. Sin sacrificar calidad.</p>
+          </div>
+        </div>
+        <div class="ia-item">
+          <div class="ia-num">03</div>
+          <div>
+            <h4>Código limpio y mantenible</h4>
+            <p>El código que entregamos es tuyo. Documentado, organizado y listo para que cualquier equipo lo mantenga después.</p>
+          </div>
+        </div>
+        <div class="ia-item">
+          <div class="ia-num">04</div>
+          <div>
+            <h4>Testing y seguridad incluidos</h4>
+            <p>La IA genera tests automáticos y revisa vulnerabilidades. Tu sistema nace seguro y probado, no a medias.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESO -->
+<section id="proceso" class="section">
+  <div class="container">
+    <div class="sec-head">
+      <span class="eyebrow">Proceso</span>
+      <h2>De la idea a producción en <span class="grad-text">4 pasos</span></h2>
+    </div>
+    <div class="timeline">
+      <div class="tl-line"></div>
+      <div class="tl-step">
+        <div class="tl-dot"><span>1</span></div>
+        <div class="tl-card">
+          <div class="tl-header">
+            <i class="fas fa-stethoscope"></i>
+            <div>
+              <h4>Diagnóstico gratuito</h4>
+              <span class="tl-time">Día 1 — 30 min</span>
+            </div>
+          </div>
+          <p>Videollamada donde entendemos tu negocio, tus dolores y oportunidades. No hay compromiso. Salimos con un mapa claro de qué necesitas.</p>
+          <div class="tl-output"><i class="fas fa-file-alt"></i> Entregable: Documento de diagnóstico</div>
+        </div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-dot"><span>2</span></div>
+        <div class="tl-card">
+          <div class="tl-header">
+            <i class="fas fa-pencil-ruler"></i>
+            <div>
+              <h4>Propuesta y diseño</h4>
+              <span class="tl-time">Semana 1</span>
+            </div>
+          </div>
+          <p>Diseñamos la solución con wireframes y flujos de usuario. Alcance, costo y plazos detallados. Tú apruebas antes de construir una sola línea de código.</p>
+          <div class="tl-output"><i class="fas fa-file-alt"></i> Entregable: Propuesta + mockups</div>
+        </div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-dot"><span>3</span></div>
+        <div class="tl-card">
+          <div class="tl-header">
+            <i class="fas fa-code"></i>
+            <div>
+              <h4>Desarrollo ágil</h4>
+              <span class="tl-time">Semanas 2-5</span>
+            </div>
+          </div>
+          <p>Sprints semanales con entregables visibles. Cada viernes recibes un demo funcional. Feedback directo con los fundadores, no con juniors.</p>
+          <div class="tl-output"><i class="fas fa-file-alt"></i> Entregable: Demos semanales + acceso staging</div>
+        </div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-dot"><span>4</span></div>
+        <div class="tl-card">
+          <div class="tl-header">
+            <i class="fas fa-rocket"></i>
+            <div>
+              <h4>Lanzamiento y soporte</h4>
+              <span class="tl-time">Continuo</span>
+            </div>
+          </div>
+          <p>Deploy en producción, capacitación de tu equipo, documentación completa. Seguimos contigo con planes de mantenimiento y mejora continua.</p>
+          <div class="tl-output"><i class="fas fa-file-alt"></i> Entregable: Sistema en producción + docs + soporte</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTAFOLIO -->
+<section id="portafolio" class="section section-alt">
+  <div class="container">
+    <div class="sec-head">
+      <span class="eyebrow">Portafolio</span>
+      <h2>Proyectos que <span class="grad-text">demuestran resultados</span></h2>
+      <p class="sec-sub">Cada proyecto resolvió un problema real de negocio. Nombres representativos por acuerdos de confidencialidad.</p>
+    </div>
+
+    <div class="pf-filters">
+      <button class="pf-f active" data-filter="all">Todos</button>
+      <button class="pf-f" data-filter="erp">ERPs</button>
+      <button class="pf-f" data-filter="saas">SaaS</button>
+      <button class="pf-f" data-filter="mobile">Móvil</button>
+      <button class="pf-f" data-filter="auto">Automatización</button>
+      <button class="pf-f" data-filter="ia">IA</button>
+    </div>
+
+    <div class="portfolio">
+      <!-- 1 -->
+      <div class="pf-card" data-cat="erp">
+        <div class="pf-visual pf-v1">
+          <div class="pf-mock-browser">
+            <div class="pf-browser-dots"><span></span><span></span><span></span></div>
+            <div class="pf-browser-body">
+              <div class="pf-sidebar-m"><div></div><div></div><div></div><div></div><div></div></div>
+              <div class="pf-content-m">
+                <div class="pf-bar-chart"><div style="height:40%"></div><div style="height:65%"></div><div style="height:50%"></div><div style="height:82%"></div><div style="height:58%"></div><div style="height:75%"></div></div>
+              </div>
+            </div>
+          </div>
+          <span class="pf-label">ERP</span>
+        </div>
+        <div class="pf-info">
+          <h3>ErpOne</h3>
+          <p class="pf-subtitle">ERP integral para cadena de retail — 8 módulos</p>
+          <p>Contabilidad, inventario en tiempo real, CRM, facturación electrónica (Hacienda CR), nómina, compras, reportes gerenciales y POS integrado. Multi-sucursal y multi-moneda.</p>
+          <div class="pf-results">
+            <div><strong>-70%</strong><span>tiempo admin</span></div>
+            <div><strong>4 meses</strong><span>desarrollo</span></div>
+            <div><strong>$6,200</strong><span>inversión</span></div>
+          </div>
+          <div class="pf-tech"><span>Next.js</span><span>PostgreSQL</span><span>Stripe</span><span>Hacienda API</span></div>
+          <a href="demos/erpone.html" class="pf-demo-btn" target="_blank"><i class="fas fa-external-link-alt"></i> Ver demo</a>
+        </div>
+      </div>
+
+      <!-- 2 -->
+      <div class="pf-card" data-cat="saas">
+        <div class="pf-visual pf-v2">
+          <div class="pf-mock-browser">
+            <div class="pf-browser-dots"><span></span><span></span><span></span></div>
+            <div class="pf-browser-body">
+              <div class="pf-cal-mini">
+                <div class="pf-cal-row"><div></div><div class="on"></div><div></div><div class="on"></div><div></div></div>
+                <div class="pf-cal-row"><div class="on"></div><div></div><div class="on"></div><div></div><div class="on"></div></div>
+                <div class="pf-cal-row"><div></div><div class="on"></div><div></div><div></div><div class="on"></div></div>
+              </div>
+            </div>
+          </div>
+          <span class="pf-label">SaaS</span>
+        </div>
+        <div class="pf-info">
+          <h3>BookFlow</h3>
+          <p class="pf-subtitle">Plataforma de reservas online tipo Calendly</p>
+          <p>Agendamiento para salones, clínicas y consultorios. Pagos en línea, recordatorios automáticos por WhatsApp, panel multi-usuario y reportes de ocupación.</p>
+          <div class="pf-results">
+            <div><strong>+45%</strong><span>reservas</span></div>
+            <div><strong>3 semanas</strong><span>desarrollo</span></div>
+            <div><strong>$2,800</strong><span>inversión</span></div>
+          </div>
+          <div class="pf-tech"><span>React</span><span>Firebase</span><span>Stripe</span><span>Twilio</span></div>
+          <a href="demos/bookflow.html" class="pf-demo-btn" target="_blank"><i class="fas fa-external-link-alt"></i> Ver demo</a>
+        </div>
+      </div>
+
+      <!-- 3 -->
+      <div class="pf-card" data-cat="erp">
+        <div class="pf-visual pf-v3">
+          <div class="pf-mock-browser">
+            <div class="pf-browser-dots"><span></span><span></span><span></span></div>
+            <div class="pf-browser-body">
+              <div class="pf-table-m">
+                <div class="pf-tr"><div></div><div></div><div></div><div class="pf-badge-g">OK</div></div>
+                <div class="pf-tr"><div></div><div></div><div></div><div class="pf-badge-y">Pend</div></div>
+                <div class="pf-tr"><div></div><div></div><div></div><div class="pf-badge-g">OK</div></div>
+              </div>
+            </div>
+          </div>
+          <span class="pf-label">Gestión</span>
+        </div>
+        <div class="pf-info">
+          <h3>EcoPlagas Suite</h3>
+          <p class="pf-subtitle">Sistema integral para empresa de control de plagas</p>
+          <p>Calendario inteligente, rutas GPS, planilla automatizada, gestión de tickets, bodega, comisiones, reportes gerenciales y app móvil para técnicos.</p>
+          <div class="pf-results">
+            <div><strong>-90%</strong><span>manual</span></div>
+            <div><strong>6 meses</strong><span>desarrollo</span></div>
+            <div><strong>12 módulos</strong><span>integrados</span></div>
+          </div>
+          <div class="pf-tech"><span>Vanilla JS</span><span>Firebase</span><span>Cloud Functions</span><span>Maps API</span></div>
+          <a href="demos/ecoplagas.html" class="pf-demo-btn" target="_blank"><i class="fas fa-external-link-alt"></i> Ver demo</a>
+        </div>
+      </div>
+
+      <!-- 4 -->
+      <div class="pf-card" data-cat="mobile">
+        <div class="pf-visual pf-v4">
+          <div class="pf-phone-m">
+            <div class="pf-phone-notch-m"></div>
+            <div class="pf-phone-body">
+              <div class="pf-ph-line w70"></div>
+              <div class="pf-ph-card-m"></div>
+              <div class="pf-ph-line w50"></div>
+              <div class="pf-ph-row"><div class="pf-ph-sq"></div><div class="pf-ph-sq"></div></div>
+            </div>
+          </div>
+          <span class="pf-label">Mobile</span>
+        </div>
+        <div class="pf-info">
+          <h3>RutaPro</h3>
+          <p class="pf-subtitle">App para técnicos de campo con GPS y reportes</p>
+          <p>Ruta del día con mapa y navegación, reportes fotográficos, firmas digitales, tracking GPS en tiempo real y sincronización offline para zonas sin señal.</p>
+          <div class="pf-results">
+            <div><strong>+35%</strong><span>citas/día</span></div>
+            <div><strong>5 semanas</strong><span>desarrollo</span></div>
+            <div><strong>$3,400</strong><span>inversión</span></div>
+          </div>
+          <div class="pf-tech"><span>React Native</span><span>Firebase</span><span>Google Maps</span></div>
+          <a href="demos/rutapro.html" class="pf-demo-btn" target="_blank"><i class="fas fa-external-link-alt"></i> Ver demo</a>
+        </div>
+      </div>
+
+      <!-- 5 -->
+      <div class="pf-card" data-cat="saas">
+        <div class="pf-visual pf-v5">
+          <div class="pf-mock-browser">
+            <div class="pf-browser-dots"><span></span><span></span><span></span></div>
+            <div class="pf-browser-body">
+              <div class="pf-grid-items"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+            </div>
+          </div>
+          <span class="pf-label">SaaS</span>
+        </div>
+        <div class="pf-info">
+          <h3>PropGest</h3>
+          <p class="pf-subtitle">Plataforma de administración de propiedades</p>
+          <p>Sistema para inmobiliarias: contratos, cobro de alquileres, mantenimiento, portal de inquilinos, reportes financieros y recordatorios automáticos de pago.</p>
+          <div class="pf-results">
+            <div><strong>350+</strong><span>propiedades</span></div>
+            <div><strong>7 semanas</strong><span>desarrollo</span></div>
+            <div><strong>$5,800</strong><span>inversión</span></div>
+          </div>
+          <div class="pf-tech"><span>Next.js</span><span>PostgreSQL</span><span>Stripe</span><span>Twilio</span></div>
+          <a href="demos/propgest.html" class="pf-demo-btn" target="_blank"><i class="fas fa-external-link-alt"></i> Ver demo</a>
+        </div>
+      </div>
+
+      <!-- 6 -->
+      <div class="pf-card" data-cat="auto">
+        <div class="pf-visual pf-v6">
+          <div class="pf-flow-m">
+            <div class="pf-fnode"><i class="fab fa-whatsapp"></i></div>
+            <div class="pf-farrow"></div>
+            <div class="pf-fnode pf-fn-dark"><i class="fas fa-cogs"></i></div>
+            <div class="pf-farrow"></div>
+            <div class="pf-fnode"><i class="fas fa-database"></i></div>
+          </div>
+          <span class="pf-label">Bot</span>
+        </div>
+        <div class="pf-info">
+          <h3>FlowBot</h3>
+          <p class="pf-subtitle">Cobros y seguimiento por WhatsApp automatizado</p>
+          <p>Bot que envía recordatorios de pago, confirma depósitos, agenda citas y escala a un humano cuando es necesario. Conectado al ERP del cliente.</p>
+          <div class="pf-results">
+            <div><strong>-80%</strong><span>cobranza manual</span></div>
+            <div><strong>2 semanas</strong><span>desarrollo</span></div>
+            <div><strong>$490</strong><span>inversión</span></div>
+          </div>
+          <div class="pf-tech"><span>WhatsApp API</span><span>n8n</span><span>Node.js</span></div>
+          <a href="demos/flowbot.html" class="pf-demo-btn" target="_blank"><i class="fas fa-external-link-alt"></i> Ver demo</a>
+        </div>
+      </div>
+
+      <!-- 7 -->
+      <div class="pf-card" data-cat="ia">
+        <div class="pf-visual pf-v7">
+          <div class="pf-chat-m">
+            <div class="pf-bubble-m in">Hola, necesito cotizar fumigación</div>
+            <div class="pf-bubble-m out">Con gusto. Para casa o negocio? El area aprox en m2?</div>
+            <div class="pf-bubble-m in">Casa, unos 120m2</div>
+            <div class="pf-bubble-m out">Perfecto. Le cotizo $45. Tenemos espacio manana a las 2pm</div>
+          </div>
+          <span class="pf-label">IA</span>
+        </div>
+        <div class="pf-info">
+          <h3>AsistIA</h3>
+          <p class="pf-subtitle">Chatbot inteligente con IA para atención 24/7</p>
+          <p>Asistente entrenado con la info de la empresa. Cotiza, agenda, responde preguntas frecuentes y escala a humano. Funciona en WhatsApp y web.</p>
+          <div class="pf-results">
+            <div><strong>24/7</strong><span>atención</span></div>
+            <div><strong>3 semanas</strong><span>desarrollo</span></div>
+            <div><strong>$590</strong><span>inversión</span></div>
+          </div>
+          <div class="pf-tech"><span>IA Generativa</span><span>NLP</span><span>WhatsApp</span><span>Firebase</span></div>
+          <a href="demos/asistia.html" class="pf-demo-btn" target="_blank"><i class="fas fa-external-link-alt"></i> Ver demo</a>
+        </div>
+      </div>
+
+      <!-- 8 -->
+      <div class="pf-card" data-cat="erp">
+        <div class="pf-visual pf-v8">
+          <div class="pf-mock-browser">
+            <div class="pf-browser-dots"><span></span><span></span><span></span></div>
+            <div class="pf-browser-body">
+              <div class="pf-pos-m">
+                <div class="pf-pos-items"><div></div><div></div><div></div><div></div></div>
+                <div class="pf-pos-total-m">Total: $<b>127.50</b></div>
+              </div>
+            </div>
+          </div>
+          <span class="pf-label">POS</span>
+        </div>
+        <div class="pf-info">
+          <h3>CajaViva</h3>
+          <p class="pf-subtitle">Punto de venta cloud para restaurantes</p>
+          <p>POS con impresión de tickets ESC/POS, control de mesas, cocina en tiempo real, inventario automático, propinas y reportes de turno.</p>
+          <div class="pf-results">
+            <div><strong>+25%</strong><span>eficiencia</span></div>
+            <div><strong>6 semanas</strong><span>desarrollo</span></div>
+            <div><strong>$4,200</strong><span>inversión</span></div>
+          </div>
+          <div class="pf-tech"><span>React</span><span>Firebase</span><span>ESC/POS</span><span>WebSocket</span></div>
+          <a href="demos/cajaviva.html" class="pf-demo-btn" target="_blank"><i class="fas fa-external-link-alt"></i> Ver demo</a>
+        </div>
+      </div>
+
+      <!-- 9 -->
+      <div class="pf-card" data-cat="saas">
+        <div class="pf-visual pf-v9">
+          <div class="pf-mock-browser">
+            <div class="pf-browser-dots"><span></span><span></span><span></span></div>
+            <div class="pf-browser-body">
+              <div class="pf-kpi-m">
+                <div><b>$128K</b><small>Ingresos</small></div>
+                <div><b>+12%</b><small>vs mes</small></div>
+                <div><b>342</b><small>Clientes</small></div>
+              </div>
+              <div class="pf-line-m"></div>
+            </div>
+          </div>
+          <span class="pf-label">BI</span>
+        </div>
+        <div class="pf-info">
+          <h3>Pulso</h3>
+          <p class="pf-subtitle">Dashboard gerencial con alertas en tiempo real</p>
+          <p>KPIs de ventas, finanzas, operaciones y marketing en una pantalla. Alertas automáticas cuando algo se sale de rango. Conecta a cualquier fuente de datos.</p>
+          <div class="pf-results">
+            <div><strong>100%</strong><span>visibilidad</span></div>
+            <div><strong>4 semanas</strong><span>desarrollo</span></div>
+            <div><strong>$1,800</strong><span>inversión</span></div>
+          </div>
+          <div class="pf-tech"><span>Next.js</span><span>BigQuery</span><span>Recharts</span><span>Firebase</span></div>
+          <a href="demos/pulso.html" class="pf-demo-btn" target="_blank"><i class="fas fa-external-link-alt"></i> Ver demo</a>
+        </div>
+      </div>
+
+      <!-- 10 -->
+      <div class="pf-card" data-cat="ia">
+        <div class="pf-visual pf-v10">
+          <div class="pf-mock-browser">
+            <div class="pf-browser-dots"><span></span><span></span><span></span></div>
+            <div class="pf-browser-body">
+              <div class="pf-doc-scan">
+                <div class="pf-doc-page"></div>
+                <div class="pf-doc-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="pf-doc-json">{<br>&nbsp;"total": 450,<br>&nbsp;"fecha": "..."<br>}</div>
+              </div>
+            </div>
+          </div>
+          <span class="pf-label">IA</span>
+        </div>
+        <div class="pf-info">
+          <h3>DocuScan AI</h3>
+          <p class="pf-subtitle">Lectura inteligente de facturas y documentos</p>
+          <p>Extrae datos de facturas, recibos, contratos y formularios con IA. Los sube automáticamente al sistema contable sin intervención humana.</p>
+          <div class="pf-results">
+            <div><strong>-95%</strong><span>digitación</span></div>
+            <div><strong>2 semanas</strong><span>desarrollo</span></div>
+            <div><strong>$690</strong><span>inversión</span></div>
+          </div>
+          <div class="pf-tech"><span>IA Vision</span><span>Python</span><span>OCR</span><span>REST API</span></div>
+          <a href="demos/docuscan.html" class="pf-demo-btn" target="_blank"><i class="fas fa-external-link-alt"></i> Ver demo</a>
+        </div>
+      </div>
+
+      <!-- 11 -->
+      <div class="pf-card" data-cat="auto">
+        <div class="pf-visual pf-v11">
+          <div class="pf-flow-m">
+            <div class="pf-fnode"><i class="fas fa-file-invoice"></i></div>
+            <div class="pf-farrow"></div>
+            <div class="pf-fnode pf-fn-dark"><i class="fas fa-magic"></i></div>
+            <div class="pf-farrow"></div>
+            <div class="pf-fnode"><i class="fas fa-envelope"></i></div>
+          </div>
+          <span class="pf-label">Auto</span>
+        </div>
+        <div class="pf-info">
+          <h3>FacturaFlow</h3>
+          <p class="pf-subtitle">Facturación electrónica automática</p>
+          <p>Integración con Hacienda CR / SAT MX / DIAN CO. Genera, envía y almacena facturas electrónicas desde cualquier sistema con un clic o automáticamente.</p>
+          <div class="pf-results">
+            <div><strong>100%</strong><span>cumplimiento</span></div>
+            <div><strong>3 semanas</strong><span>desarrollo</span></div>
+            <div><strong>$590</strong><span>inversión</span></div>
+          </div>
+          <div class="pf-tech"><span>Node.js</span><span>Hacienda API</span><span>Firebase</span></div>
+          <a href="demos/facturaflow.html" class="pf-demo-btn" target="_blank"><i class="fas fa-external-link-alt"></i> Ver demo</a>
+        </div>
+      </div>
+
+      <!-- 12 -->
+      <div class="pf-card" data-cat="mobile">
+        <div class="pf-visual pf-v12">
+          <div class="pf-phone-m">
+            <div class="pf-phone-notch-m"></div>
+            <div class="pf-phone-body">
+              <div class="pf-ph-map"></div>
+              <div class="pf-ph-line w70"></div>
+              <div class="pf-ph-btn"></div>
+            </div>
+          </div>
+          <span class="pf-label">Mobile</span>
+        </div>
+        <div class="pf-info">
+          <h3>FitTrack</h3>
+          <p class="pf-subtitle">App para gimnasios y entrenadores personales</p>
+          <p>Gestión de membresías, rutinas personalizadas, control de asistencia con QR, pagos recurrentes, y panel del entrenador con progreso de cada cliente.</p>
+          <div class="pf-results">
+            <div><strong>+40%</strong><span>retención</span></div>
+            <div><strong>6 semanas</strong><span>desarrollo</span></div>
+            <div><strong>$4,100</strong><span>inversión</span></div>
+          </div>
+          <div class="pf-tech"><span>Flutter</span><span>Firebase</span><span>Stripe</span><span>FCM</span></div>
+          <a href="demos/fittrack.html" class="pf-demo-btn" target="_blank"><i class="fas fa-external-link-alt"></i> Ver demo</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIOS -->
+<section class="section section-dark">
+  <div class="container">
+    <div class="sec-head">
+      <span class="eyebrow light">Testimonios</span>
+      <h2>Lo que dicen nuestros <span class="grad-text">clientes</span></h2>
+    </div>
+    <div class="testimonials">
+      <div class="test-card">
+        <div class="test-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+        <p>"Nos entregaron en 5 semanas lo que otra agencia cotizó en 6 meses y a 5 veces el precio. El sistema funciona perfecto y el soporte es inmediato."</p>
+        <div class="test-author">
+          <div class="test-avatar" style="background:#667eea">MR</div>
+          <div><strong>María Rodríguez</strong><span>Gerente General — Distribuidora La Central, CR</span></div>
+        </div>
+      </div>
+      <div class="test-card">
+        <div class="test-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+        <p>"El bot de WhatsApp que nos hicieron recupera cuentas por cobrar que antes se nos perdían. Se pagó solo en el primer mes. Increíble."</p>
+        <div class="test-author">
+          <div class="test-avatar" style="background:#f5576c">CL</div>
+          <div><strong>Carlos López</strong><span>Director Financiero — GreenTech, MX</span></div>
+        </div>
+      </div>
+      <div class="test-card">
+        <div class="test-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+        <p>"Pasamos de Excel a un sistema completo con GPS, rutas y planillas. Los técnicos en campo lo usan sin problemas. Josué y Pablo son de otro nivel."</p>
+        <div class="test-author">
+          <div class="test-avatar" style="background:#43e97b">AV</div>
+          <div><strong>Andrea Vargas</strong><span>Directora de Operaciones — ServiPlagas, CR</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="sec-head">
+      <span class="eyebrow">Tecnologías</span>
+      <h2>Herramientas que <span class="grad-text">dominamos</span></h2>
+      <p class="sec-sub">Usamos lo mejor del ecosistema moderno. Sin frameworks abandonados ni tecnología obsoleta.</p>
+    </div>
+    <div class="tech-grid">
+      <div class="tech-cat">
+        <h4><i class="fas fa-palette"></i> Frontend</h4>
+        <div class="tech-items">
+          <div class="tech-item"><i class="fab fa-react"></i><span>React</span></div>
+          <div class="tech-item"><i class="fab fa-vuejs"></i><span>Vue.js</span></div>
+          <div class="tech-item"><span class="tech-text-icon">N</span><span>Next.js</span></div>
+          <div class="tech-item"><i class="fab fa-js-square"></i><span>TypeScript</span></div>
+          <div class="tech-item"><span class="tech-text-icon">Tw</span><span>Tailwind</span></div>
+        </div>
+      </div>
+      <div class="tech-cat">
+        <h4><i class="fas fa-server"></i> Backend</h4>
+        <div class="tech-items">
+          <div class="tech-item"><i class="fab fa-node-js"></i><span>Node.js</span></div>
+          <div class="tech-item"><i class="fab fa-python"></i><span>Python</span></div>
+          <div class="tech-item"><span class="tech-text-icon">CF</span><span>Cloud Functions</span></div>
+          <div class="tech-item"><span class="tech-text-icon">GQL</span><span>GraphQL</span></div>
+          <div class="tech-item"><span class="tech-text-icon">REST</span><span>REST APIs</span></div>
+        </div>
+      </div>
+      <div class="tech-cat">
+        <h4><i class="fas fa-database"></i> Datos & Cloud</h4>
+        <div class="tech-items">
+          <div class="tech-item"><i class="fas fa-fire"></i><span>Firebase</span></div>
+          <div class="tech-item"><i class="fab fa-aws"></i><span>AWS</span></div>
+          <div class="tech-item"><i class="fab fa-google"></i><span>GCP</span></div>
+          <div class="tech-item"><span class="tech-text-icon">PG</span><span>PostgreSQL</span></div>
+          <div class="tech-item"><span class="tech-text-icon">SB</span><span>Supabase</span></div>
+        </div>
+      </div>
+      <div class="tech-cat">
+        <h4><i class="fas fa-brain"></i> IA & Automatización</h4>
+        <div class="tech-items">
+          <div class="tech-item"><span class="tech-text-icon">AI</span><span>IA Generativa</span></div>
+          <div class="tech-item"><span class="tech-text-icon">NL</span><span>NLP</span></div>
+          <div class="tech-item"><span class="tech-text-icon">n8</span><span>n8n</span></div>
+          <div class="tech-item"><i class="fab fa-whatsapp"></i><span>WA API</span></div>
+          <div class="tech-item"><span class="tech-text-icon">CV</span><span>Computer Vision</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRECIOS -->
+<section id="precios" class="section">
+  <div class="container">
+    <div class="sec-head">
+      <span class="eyebrow">Precios</span>
+      <h2>Calidad de primer mundo, <span class="grad-text">precios LATAM</span></h2>
+      <p class="sec-sub">Precios fijos por proyecto en USD. Sin sorpresas, sin cargos ocultos. IVA no incluido.</p>
+    </div>
+
+    <!-- Quick services -->
+    <div class="quick-services">
+      <h3><i class="fas fa-bolt"></i> Servicios rápidos — empieza desde $30</h3>
+      <p class="qs-sub">No necesitas un proyecto grande para trabajar con nosotros. Resolvemos cosas puntuales el mismo día.</p>
+      <div class="qs-grid">
+        <div class="qs-card">
+          <div class="qs-price">$<b>30</b></div>
+          <h4>Consultoría IA</h4>
+          <p>1 hora en vivo donde te enseñamos a usar herramientas de IA para optimizar tu negocio.</p>
+          <span class="qs-time"><i class="fas fa-clock"></i> 1 hora</span>
+        </div>
+        <div class="qs-card">
+          <div class="qs-price">$<b>50</b></div>
+          <h4>Diagnóstico tech</h4>
+          <p>Analizamos tu operación y te decimos qué automatizar, qué sistema necesitas y cuánto costaría.</p>
+          <span class="qs-time"><i class="fas fa-clock"></i> 1-2 horas</span>
+        </div>
+        <div class="qs-card">
+          <div class="qs-price">$<b>75</b></div>
+          <h4>Configuración de herramientas</h4>
+          <p>Te configuramos n8n, Make, Zapier, bots de WhatsApp u otra herramienta lista para usar.</p>
+          <span class="qs-time"><i class="fas fa-clock"></i> Mismo día</span>
+        </div>
+        <div class="qs-card">
+          <div class="qs-price">$<b>100</b></div>
+          <h4>Fix rápido de bug</h4>
+          <p>¿Tu sitio o app tiene un error? Lo diagnosticamos y arreglamos. Código tuyo o de terceros.</p>
+          <span class="qs-time"><i class="fas fa-clock"></i> 24 horas</span>
+        </div>
+        <div class="qs-card">
+          <div class="qs-price">$<b>150</b></div>
+          <h4>Mini-automatización</h4>
+          <p>Un flujo automatizado concreto: recordatorio de cobro, alerta por email, sync entre dos sistemas.</p>
+          <span class="qs-time"><i class="fas fa-clock"></i> 1-3 días</span>
+        </div>
+        <div class="qs-card">
+          <div class="qs-price">$<b>200</b></div>
+          <h4>Prototipo o mockup</h4>
+          <p>Diseñamos las pantallas de tu idea en un prototipo clickeable para que lo pruebes antes de invertir.</p>
+          <span class="qs-time"><i class="fas fa-clock"></i> 3-5 días</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pricing-section-divider">
+      <span>Proyectos completos</span>
+    </div>
+
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-head">
+          <span class="price-tier">Starter</span>
+          <h3>Landing Page & Web</h3>
+          <p>Presencia profesional para emprendedores.</p>
+        </div>
+        <div class="price-amount">
+          <span class="price-from">Desde</span>
+          <div class="price-val">$<b>290</b></div>
+          <span class="price-unit">proyecto cerrado</span>
+        </div>
+        <ul class="price-feats">
+          <li><i class="fas fa-check"></i> Landing page moderna y responsive</li>
+          <li><i class="fas fa-check"></i> Hasta 5 secciones + formulario</li>
+          <li><i class="fas fa-check"></i> WhatsApp / email integrado</li>
+          <li><i class="fas fa-check"></i> SEO básico + hosting</li>
+          <li><i class="fas fa-check"></i> Entrega en 5-7 días</li>
+        </ul>
+        <a href="#contacto" class="btn btn-ghost btn-full">Solicitar</a>
+      </div>
+
+      <div class="price-card price-popular">
+        <span class="price-badge">Más popular</span>
+        <div class="price-head">
+          <span class="price-tier">Growth</span>
+          <h3>App a medida o Automatización</h3>
+          <p>El salto digital que tu empresa necesita.</p>
+        </div>
+        <div class="price-amount">
+          <span class="price-from">Desde</span>
+          <div class="price-val">$<b>1,490</b></div>
+          <span class="price-unit">proyecto cerrado</span>
+        </div>
+        <ul class="price-feats">
+          <li><i class="fas fa-check"></i> Web app completa a la medida</li>
+          <li><i class="fas fa-check"></i> Login, roles, base de datos</li>
+          <li><i class="fas fa-check"></i> Integraciones (WA, email, pagos)</li>
+          <li><i class="fas fa-check"></i> Panel de admin incluido</li>
+          <li><i class="fas fa-check"></i> Deploy en la nube</li>
+          <li><i class="fas fa-check"></i> 30 días soporte post-entrega</li>
+          <li><i class="fas fa-check"></i> Entrega en 3-5 semanas</li>
+        </ul>
+        <a href="#contacto" class="btn btn-primary btn-full">Solicitar</a>
+      </div>
+
+      <div class="price-card">
+        <div class="price-head">
+          <span class="price-tier">Scale</span>
+          <h3>ERP / SaaS / Plataforma</h3>
+          <p>Sistemas completos y multi-módulo.</p>
+        </div>
+        <div class="price-amount">
+          <span class="price-from">Desde</span>
+          <div class="price-val">$<b>4,900</b></div>
+          <span class="price-unit">proyecto cerrado</span>
+        </div>
+        <ul class="price-feats">
+          <li><i class="fas fa-check"></i> Múltiples módulos integrados</li>
+          <li><i class="fas fa-check"></i> Web + app móvil (PWA/nativa)</li>
+          <li><i class="fas fa-check"></i> Multi-sucursal, roles avanzados</li>
+          <li><i class="fas fa-check"></i> Reportería y BI</li>
+          <li><i class="fas fa-check"></i> Arquitectura escalable</li>
+          <li><i class="fas fa-check"></i> 90 días soporte post-entrega</li>
+          <li><i class="fas fa-check"></i> Capacitación de tu equipo</li>
+        </ul>
+        <a href="#contacto" class="btn btn-ghost btn-full">Solicitar</a>
+      </div>
+    </div>
+
+    <!-- Add-ons -->
+    <div class="addons-section">
+      <h3>Servicios puntuales y add-ons</h3>
+      <div class="addons-row">
+        <div class="addon"><i class="fas fa-robot"></i><div><b>Bot WhatsApp IA</b><span>desde $390</span></div></div>
+        <div class="addon"><i class="fas fa-chart-line"></i><div><b>Dashboard gerencial</b><span>desde $690</span></div></div>
+        <div class="addon"><i class="fas fa-plug"></i><div><b>Integración sistemas</b><span>desde $250</span></div></div>
+        <div class="addon"><i class="fas fa-file-invoice"></i><div><b>Factura electrónica</b><span>desde $490</span></div></div>
+        <div class="addon"><i class="fas fa-mobile-alt"></i><div><b>App móvil extra</b><span>desde $890</span></div></div>
+        <div class="addon"><i class="fas fa-user-tie"></i><div><b>Consultoría 1-a-1</b><span>$30/hora</span></div></div>
+      </div>
+    </div>
+
+    <!-- Maintenance -->
+    <div class="maint-section">
+      <div class="maint-left">
+        <span class="eyebrow light">Post-entrega</span>
+        <h3>Planes de soporte mensual</h3>
+        <p>Tu sistema siempre al día, seguro y mejorando.</p>
+      </div>
+      <div class="maint-plans">
+        <div class="maint-plan">
+          <h5>Básico</h5>
+          <div class="mp-price">$<b>49</b><small>/mes</small></div>
+          <ul><li>Monitoreo 24/7</li><li>Backups diarios</li><li>2 hrs cambios/mes</li></ul>
+        </div>
+        <div class="maint-plan mp-featured">
+          <h5>Pro</h5>
+          <div class="mp-price">$<b>149</b><small>/mes</small></div>
+          <ul><li>Todo Básico +</li><li>8 hrs cambios/mes</li><li>Respuesta &lt; 4h</li></ul>
+        </div>
+        <div class="maint-plan">
+          <h5>Premium</h5>
+          <div class="mp-price">$<b>349</b><small>/mes</small></div>
+          <ul><li>Todo Pro +</li><li>20 hrs/mes</li><li>Features continuas</li></ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="price-note">
+      <i class="fas fa-lightbulb"></i>
+      <span>Precios referenciales en USD. ¿Presupuesto ajustado? Hablemos: siempre encontramos la forma de que funcione.</span>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARATIVA -->
+<section class="section section-dark">
+  <div class="container">
+    <div class="sec-head">
+      <span class="eyebrow light">Comparativa</span>
+      <h2>¿Por qué elegirnos sobre las <span class="grad-text">alternativas?</span></h2>
+    </div>
+    <div class="compare-table-wrap">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Freelancer</th>
+            <th>Agencia tradicional</th>
+            <th class="ct-us">LATAM Code Factory</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Precio por ERP completo</td><td>$3K-8K</td><td>$25K-80K</td><td class="ct-us"><b>$4.9K-12K</b></td></tr>
+          <tr><td>Tiempo de entrega</td><td>3-8 meses</td><td>4-12 meses</td><td class="ct-us"><b>3-8 semanas</b></td></tr>
+          <tr><td>Trato con fundadores</td><td><i class="fas fa-check t-green"></i></td><td><i class="fas fa-times t-red"></i></td><td class="ct-us"><i class="fas fa-check t-green"></i></td></tr>
+          <tr><td>Demos semanales</td><td><i class="fas fa-times t-red"></i></td><td>A veces</td><td class="ct-us"><i class="fas fa-check t-green"></i></td></tr>
+          <tr><td>Soporte post-entrega</td><td>Variable</td><td>Caro (+$$$)</td><td class="ct-us"><b>Desde $49/mes</b></td></tr>
+          <tr><td>Código documentado tuyo</td><td>Rara vez</td><td><i class="fas fa-check t-green"></i></td><td class="ct-us"><i class="fas fa-check t-green"></i></td></tr>
+          <tr><td>Riesgo de abandono</td><td class="t-red"><b>Alto</b></td><td>Bajo</td><td class="ct-us t-green"><b>Ninguno</b></td></tr>
+          <tr><td>Uso de IA para velocidad</td><td><i class="fas fa-times t-red"></i></td><td><i class="fas fa-times t-red"></i></td><td class="ct-us"><i class="fas fa-check t-green"></i></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="section">
+  <div class="container faq-container">
+    <div class="sec-head">
+      <span class="eyebrow">FAQ</span>
+      <h2>Preguntas <span class="grad-text">frecuentes</span></h2>
+    </div>
+    <div class="faq-list">
+      <details class="faq-item" open>
+        <summary>¿Cómo pueden cobrar tan barato sin perder calidad?</summary>
+        <div class="faq-answer">Usamos herramientas de inteligencia artificial avanzadas que multiplican nuestra productividad por 10x. Nuestros ingenieros senior supervisan y optimizan todo el código generado. El resultado: software de primer mundo a una fracción del tiempo y costo. No contratamos juniors baratos — usamos IA para que los senior rindan más.</div>
+      </details>
+      <details class="faq-item">
+        <summary>¿Qué pasa si necesito cambios después de la entrega?</summary>
+        <div class="faq-answer">Los primeros 30-90 días post-entrega (según el plan) incluyen correcciones y ajustes sin costo adicional. Para cambios continuos, ofrecemos planes de mantenimiento desde $49/mes que incluyen horas de desarrollo. No te dejamos solo después de la entrega.</div>
+      </details>
+      <details class="faq-item">
+        <summary>¿En qué países trabajan?</summary>
+        <div class="faq-answer">Somos de Costa Rica y trabajamos con empresas en toda Latinoamérica — desde México hasta Argentina, incluyendo Centroamérica, el Caribe y Brasil. Todo nuestro trabajo es remoto, por lo que la ubicación no es limitante. Nos adaptamos a tu zona horaria y entendemos la regulación local de cada país (facturación electrónica, impuestos, etc.).</div>
+      </details>
+      <details class="faq-item">
+        <summary>¿El código fuente es mío?</summary>
+        <div class="faq-answer">Sí, 100%. Al terminar el proyecto te entregamos el código fuente completo, documentado y en un repositorio de tu propiedad. Si mañana decides cambiar de proveedor, te llevas todo. Cero dependencia.</div>
+      </details>
+      <details class="faq-item">
+        <summary>¿Cuánto toma un proyecto típico?</summary>
+        <div class="faq-answer">Depende del alcance: una landing page toma 5-7 días. Una app a medida 3-5 semanas. Un ERP completo 2-4 meses. Entregamos demos funcionales cada semana para que veas el avance real, no solo promesas.</div>
+      </details>
+      <details class="faq-item">
+        <summary>¿Pueden integrarse con sistemas que ya uso?</summary>
+        <div class="faq-answer">Sí. Tenemos experiencia integrando con QuickBooks, SAP, sistemas de Hacienda/SAT, Stripe, PayPal, WhatsApp Business API, Google Workspace, CRMs como HubSpot y Salesforce, y APIs personalizadas. Si tu sistema tiene API, lo conectamos.</div>
+      </details>
+      <details class="faq-item">
+        <summary>¿Qué garantía dan si algo falla?</summary>
+        <div class="faq-answer">Incluimos período de garantía (30-90 días según plan) donde corregimos cualquier bug sin costo. Además, montamos monitoreo automático y alertas para detectar problemas antes de que los notes. Y con un plan de mantenimiento, estamos pendientes siempre.</div>
+      </details>
+      <details class="faq-item">
+        <summary>¿Cómo es el proceso de pago?</summary>
+        <div class="faq-answer">Trabajamos con pagos por hitos: 40% al iniciar, 30% a mitad del proyecto y 30% al entregar. Aceptamos transferencia bancaria, Stripe (tarjeta), PayPal y en Costa Rica SINPE Móvil. El precio se cierra desde la propuesta — sin sorpresas.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="contacto" class="section section-cta">
+  <div class="container">
+    <div class="cta-grid">
+      <div class="cta-copy">
+        <span class="eyebrow light">Hablemos</span>
+        <h2>¿Listo para que la tecnología trabaje por tu empresa?</h2>
+        <p>Agenda un diagnóstico gratuito de 30 minutos. Sin compromiso, sin ventas forzadas. Salimos con un plan claro de qué necesitas y cuánto costaría.</p>
+        <div class="cta-info">
+          <a href="mailto:hola@latamcodefactory.com"><i class="fas fa-envelope"></i> hola@latamcodefactory.com</a>
+          <a href="https://wa.me/50683000000" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> WhatsApp directo</a>
+          <a href="#"><i class="fab fa-linkedin-in"></i> LinkedIn</a>
+        </div>
+        <div class="cta-badges">
+          <div><i class="fas fa-calendar-check"></i><span>Diagnóstico gratuito</span></div>
+          <div><i class="fas fa-clock"></i><span>Respondemos en &lt; 24h</span></div>
+          <div><i class="fas fa-lock"></i><span>Info 100% confidencial</span></div>
+        </div>
+      </div>
+      <form class="cta-form" id="contactForm" onsubmit="return handleContactSubmit(event)">
+        <h3>Cuéntanos de tu proyecto</h3>
+        <div class="field">
+          <label>Nombre completo *</label>
+          <input type="text" name="nombre" required placeholder="Tu nombre" />
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label>Empresa</label>
+            <input type="text" name="empresa" placeholder="Tu empresa" />
+          </div>
+          <div class="field">
+            <label>País</label>
+            <select name="pais">
+              <option>Costa Rica</option><option>México</option><option>Colombia</option><option>Argentina</option><option>Chile</option><option>Perú</option><option>Ecuador</option><option>Guatemala</option><option>Panamá</option><option>Honduras</option><option>El Salvador</option><option>Nicaragua</option><option>República Dominicana</option><option>Cuba</option><option>Puerto Rico</option><option>Venezuela</option><option>Bolivia</option><option>Paraguay</option><option>Uruguay</option><option>Brasil</option><option>Belice</option><option>Haití</option><option>Otro</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>Correo *</label>
+          <input type="email" name="correo" required placeholder="tu@correo.com" />
+        </div>
+        <div class="field">
+          <label>WhatsApp</label>
+          <input type="tel" name="whatsapp" placeholder="+506 8000 0000" />
+        </div>
+        <div class="field">
+          <label>¿Qué necesitas?</label>
+          <select name="servicio">
+            <option>Desarrollo de aplicación</option><option>Automatización</option><option>Solución con IA</option><option>ERP / Sistema completo</option><option>Dashboards / BI</option><option>App móvil</option><option>Consultoría</option><option>Aún no lo tengo claro</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Cuéntanos más</label>
+          <textarea name="mensaje" rows="3" placeholder="Describe brevemente tu idea o reto..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full btn-lg"><i class="fas fa-paper-plane"></i> Enviar y agendar llamada</button>
+        <p class="form-note">Respondemos en menos de 24 horas hábiles.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="foot-brand">
+        <div class="brand"><span class="brand-logo"><i class="fas fa-industry"></i></span><span class="brand-name">LATAM <b>Code Factory</b></span></div>
+        <p>Software, IA y automatización para PyMEs de Latinoamérica. Fundado por Josué Cano y Pablo Paniagua.</p>
+        <div class="foot-social">
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-github"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+        </div>
+      </div>
+      <div><h5>Servicios</h5><a href="#servicios">Aplicaciones web</a><a href="#servicios">Apps móviles</a><a href="#servicios">Automatización</a><a href="#servicios">Soluciones con IA</a><a href="#servicios">ERPs a la medida</a><a href="#servicios">Dashboards</a></div>
+      <div><h5>Empresa</h5><a href="#nosotros">Nosotros</a><a href="#proceso">Proceso</a><a href="#portafolio">Portafolio</a><a href="#precios">Precios</a><a href="#faq">FAQ</a><a href="#contacto">Contacto</a></div>
+      <div><h5>Contacto</h5><a href="mailto:hola@latamcodefactory.com"><i class="fas fa-envelope"></i> hola@latamcodefactory.com</a><a href="https://wa.me/50683000000"><i class="fab fa-whatsapp"></i> +506 8300 0000</a><a href="#"><i class="fas fa-map-marker-alt"></i> San José, Costa Rica</a></div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; <span id="year"></span> LATAM Code Factory &middot; Josué Cano & Pablo Paniagua</span>
+      <span>Hecho con <i class="fas fa-heart" style="color:#ef4444"></i> en Latinoamérica</span>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

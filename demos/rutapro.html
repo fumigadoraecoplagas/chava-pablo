@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RutaPro — Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  .back-link {
+    position: fixed;
+    top: 20px;
+    left: 24px;
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 100;
+    transition: color .2s;
+  }
+  .back-link:hover { color: #e2e8f0; }
+
+  .phone-wrapper {
+    margin-top: 40px;
+    width: 375px;
+    height: 760px;
+    border-radius: 40px;
+    background: #f1f5f9;
+    box-shadow: 0 0 0 3px #334155, 0 25px 80px rgba(0,0,0,.55);
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+  }
+  /* Notch */
+  .notch {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px;
+    height: 28px;
+    background: #0f172a;
+    border-radius: 0 0 18px 18px;
+    z-index: 10;
+  }
+  .notch::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #1e293b;
+    border-radius: 50%;
+    right: 28px;
+    top: 8px;
+  }
+  /* Status bar */
+  .status-bar {
+    height: 48px;
+    background: #0f172a;
+    color: #fff;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 24px 6px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .status-time { margin-left: 4px; }
+  .status-icons { display: flex; gap: 6px; align-items: center; font-size: 11px; }
+  .status-icons svg { width: 14px; height: 14px; fill: #fff; }
+
+  /* Top bar */
+  .top-bar {
+    background: #0f172a;
+    color: #fff;
+    padding: 8px 16px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .top-bar h1 { font-size: 17px; font-weight: 700; }
+  .top-bar span { font-size: 12px; color: #94a3b8; }
+  .hamburger { display: flex; flex-direction: column; gap: 3px; cursor: pointer; }
+  .hamburger div { width: 18px; height: 2px; background: #e2e8f0; border-radius: 1px; }
+
+  /* Summary */
+  .summary-strip {
+    background: #1e293b;
+    color: #cbd5e1;
+    text-align: center;
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: .2px;
+  }
+  .summary-strip b { color: #38bdf8; }
+
+  /* Scroll area */
+  .scroll-area {
+    height: calc(100% - 48px - 58px - 36px - 56px);
+    overflow-y: auto;
+    padding: 10px 12px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #f1f5f9;
+  }
+  .scroll-area::-webkit-scrollbar { width: 0; }
+
+  /* Cards */
+  .card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 12px 14px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    position: relative;
+    transition: all .2s;
+  }
+  .card.active {
+    background: #eff6ff;
+    border: 1.5px solid #3b82f6;
+    box-shadow: 0 4px 16px rgba(59,130,246,.18);
+  }
+  .time-col {
+    min-width: 44px;
+    text-align: center;
+  }
+  .time-col .time {
+    font-size: 15px;
+    font-weight: 700;
+    color: #0f172a;
+  }
+  .time-col .ampm {
+    font-size: 9px;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .card-body { flex: 1; min-width: 0; }
+  .card-body .client {
+    font-size: 14px;
+    font-weight: 600;
+    color: #0f172a;
+    margin-bottom: 2px;
+  }
+  .card-body .address {
+    font-size: 11px;
+    color: #64748b;
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .card-body .service {
+    font-size: 11px;
+    color: #475569;
+    font-weight: 500;
+  }
+  /* Pills */
+  .pill {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 20px;
+    white-space: nowrap;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+  }
+  .pill.green { background: #dcfce7; color: #15803d; }
+  .pill.blue  { background: #dbeafe; color: #1d4ed8; }
+  .pill.yellow { background: #fef9c3; color: #a16207; }
+  .pill.gray  { background: #f1f5f9; color: #64748b; }
+
+  /* Expanded card extras */
+  .card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .btn-action {
+    flex: 1;
+    padding: 9px 8px;
+    border: none;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+  .btn-waze { background: #33ccff; color: #0f172a; }
+  .btn-report { background: #3b82f6; color: #fff; }
+
+  /* Bottom Tab Bar */
+  .tab-bar {
+    height: 56px;
+    background: #fff;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding-bottom: 2px;
+  }
+  .tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    font-size: 10px;
+    font-weight: 500;
+    color: #94a3b8;
+    cursor: pointer;
+  }
+  .tab.active { color: #3b82f6; }
+  .tab svg { width: 22px; height: 22px; }
+</style>
+</head>
+<body>
+
+<a href="../#portafolio" class="back-link">&larr; Volver al portafolio</a>
+
+<div class="phone-wrapper">
+  <div class="notch"></div>
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <div class="status-icons">
+      <svg viewBox="0 0 24 24"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.34C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+    </div>
+  </div>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div>
+      <h1>Mi Ruta</h1>
+      <span>Martes 15 Abr</span>
+    </div>
+    <div class="hamburger"><div></div><div></div><div></div></div>
+  </div>
+
+  <!-- Summary -->
+  <div class="summary-strip">
+    <b>8</b> citas hoy &middot; <b>3</b> completadas &middot; <b>2</b> en ruta
+  </div>
+
+  <!-- Cards -->
+  <div class="scroll-area">
+
+    <!-- Card 1: Completada -->
+    <div class="card">
+      <div class="time-col"><div class="time">8:00</div><div class="ampm">am</div></div>
+      <div class="card-body">
+        <div class="client">María Fernández</div>
+        <div class="address">San José, Barrio Escalante, Av. 7</div>
+        <div class="service">Fumigación general</div>
+      </div>
+      <span class="pill green">Completada</span>
+    </div>
+
+    <!-- Card 2: Completada -->
+    <div class="card">
+      <div class="time-col"><div class="time">9:30</div><div class="ampm">am</div></div>
+      <div class="card-body">
+        <div class="client">Carlos Rojas Solís</div>
+        <div class="address">Escazú, San Rafael, Cond. Vista Real</div>
+        <div class="service">Control de termitas</div>
+      </div>
+      <span class="pill green">Completada</span>
+    </div>
+
+    <!-- Card 3: En servicio (ACTIVE) -->
+    <div class="card active">
+      <div class="time-col"><div class="time">11:00</div><div class="ampm">am</div></div>
+      <div class="card-body">
+        <div class="client">Restaurante El Patio</div>
+        <div class="address">Heredia, San Francisco, 200m norte del parque</div>
+        <div class="service">Desratización &middot; Contrato mensual</div>
+        <div class="card-actions">
+          <button class="btn-action btn-waze">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#0f172a"><path d="M12 2C6.5 2 2 6.5 2 12c0 2.3.8 4.4 2.1 6.1L3 22l3.9-1.1c1.7 1.3 3.8 2.1 6.1 2.1 5.5 0 10-4.5 10-10S17.5 2 12 2zm-2 13.5c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5-.7 1.5-1.5 1.5zm4 0c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5-.7 1.5-1.5 1.5z"/></svg>
+            Navegar con Waze
+          </button>
+          <button class="btn-action btn-report">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM6 20V4h5v7h7v9H6z"/></svg>
+            Hacer reporte
+          </button>
+        </div>
+      </div>
+      <span class="pill blue">En servicio</span>
+    </div>
+
+    <!-- Card 4: Siguiente -->
+    <div class="card">
+      <div class="time-col"><div class="time">1:00</div><div class="ampm">pm</div></div>
+      <div class="card-body">
+        <div class="client">Andrea Villalobos</div>
+        <div class="address">Cartago, Tres Ríos, Res. Monte Bello</div>
+        <div class="service">Control de cucarachas</div>
+      </div>
+      <span class="pill yellow">Siguiente</span>
+    </div>
+
+    <!-- Card 5: Pendiente -->
+    <div class="card">
+      <div class="time-col"><div class="time">3:00</div><div class="ampm">pm</div></div>
+      <div class="card-body">
+        <div class="client">Oficinas TechCR S.A.</div>
+        <div class="address">Santa Ana, Forum I, piso 3</div>
+        <div class="service">Inspección preventiva</div>
+      </div>
+      <span class="pill gray">Pendiente</span>
+    </div>
+
+  </div>
+
+  <!-- Tab Bar -->
+  <div class="tab-bar">
+    <div class="tab active">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>
+      Ruta
+    </div>
+    <div class="tab">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/></svg>
+      Mapa
+    </div>
+    <div class="tab">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM6 20V4h5v7h7v9H6z"/></svg>
+      Reportes
+    </div>
+    <div class="tab">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      Perfil
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

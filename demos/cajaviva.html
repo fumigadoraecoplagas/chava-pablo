@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CajaViva — Punto de Venta</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'DM Sans', sans-serif; background: #1c1917; color: #fafaf9; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+        .back-link { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: #431407; color: #fed7aa; padding: 6px 20px; font-size: 13px; text-align: center; }
+        .back-link a { color: #fdba74; text-decoration: none; font-weight: 500; }
+        .back-link a:hover { color: #fff; text-decoration: underline; }
+
+        .app { display: flex; flex-direction: column; height: 100vh; padding-top: 30px; }
+
+        /* Top Bar */
+        .pos-topbar { background: #292524; border-bottom: 1px solid #44403c; padding: 0 24px; height: 56px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+        .pos-topbar-left { display: flex; align-items: center; gap: 20px; }
+        .pos-logo { font-size: 20px; font-weight: 800; color: #fb923c; letter-spacing: -0.5px; }
+        .pos-logo span { color: #fafaf9; }
+        .table-selector { display: flex; align-items: center; gap: 8px; background: #44403c; border-radius: 8px; padding: 7px 16px; cursor: pointer; }
+        .table-selector .table-num { font-size: 14px; font-weight: 700; color: #fb923c; }
+        .table-selector .table-label { font-size: 12px; color: #a8a29e; }
+        .table-selector .arrow { color: #78716c; font-size: 12px; }
+        .pos-topbar-center { display: flex; gap: 6px; }
+        .tab-btn { background: #44403c; border: none; color: #a8a29e; padding: 7px 16px; border-radius: 6px; font-family: inherit; font-size: 12px; font-weight: 500; cursor: pointer; }
+        .tab-btn.active { background: #ea580c; color: #fff; }
+        .tab-btn:hover:not(.active) { background: #57534e; color: #fafaf9; }
+        .pos-topbar-right { display: flex; align-items: center; gap: 14px; }
+        .waiter-info { display: flex; align-items: center; gap: 8px; }
+        .waiter-avatar { width: 32px; height: 32px; background: linear-gradient(135deg, #f97316, #ea580c); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
+        .waiter-name { font-size: 13px; font-weight: 500; color: #d6d3d1; }
+        .waiter-role { font-size: 11px; color: #78716c; }
+        .clock { font-size: 14px; font-weight: 600; color: #a8a29e; font-variant-numeric: tabular-nums; }
+
+        /* Main Layout */
+        .pos-main { flex: 1; display: flex; overflow: hidden; }
+
+        /* Menu Grid */
+        .menu-panel { flex: 1; display: flex; flex-direction: column; background: #1c1917; }
+        .category-bar { display: flex; gap: 8px; padding: 16px 20px 8px; overflow-x: auto; flex-shrink: 0; }
+        .cat-chip { background: #292524; border: 1px solid #44403c; color: #a8a29e; padding: 8px 18px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.15s; }
+        .cat-chip:hover { border-color: #78716c; color: #fafaf9; }
+        .cat-chip.active { background: linear-gradient(135deg, #ea580c, #c2410c); border-color: transparent; color: #fff; }
+
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; padding: 12px 20px 20px; overflow-y: auto; flex: 1; align-content: start; }
+        .menu-item { background: #292524; border: 1px solid #44403c; border-radius: 14px; padding: 18px 16px; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; }
+        .menu-item:hover { border-color: #f97316; background: #352f2b; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+        .menu-item:active { transform: translateY(0); }
+        .menu-icon { font-size: 36px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; background: #1c1917; border-radius: 12px; }
+        .menu-item-name { font-size: 13px; font-weight: 600; color: #fafaf9; line-height: 1.3; }
+        .menu-item-price { font-size: 16px; font-weight: 800; color: #fb923c; }
+        .menu-item-time { font-size: 11px; color: #78716c; }
+
+        /* Order Panel */
+        .order-panel { width: 360px; background: #292524; border-left: 1px solid #44403c; display: flex; flex-direction: column; flex-shrink: 0; }
+        .order-header { padding: 18px 20px; border-bottom: 1px solid #44403c; display: flex; justify-content: space-between; align-items: center; }
+        .order-header h3 { font-size: 16px; font-weight: 700; color: #fafaf9; }
+        .order-count { background: #ea580c; color: #fff; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; }
+        .order-items { flex: 1; overflow-y: auto; padding: 8px 0; }
+        .order-item { display: flex; align-items: center; padding: 12px 20px; gap: 12px; border-bottom: 1px solid rgba(68,64,60,0.5); transition: background 0.1s; }
+        .order-item:hover { background: rgba(255,255,255,0.03); }
+        .qty-control { display: flex; align-items: center; gap: 0; }
+        .qty-btn { width: 26px; height: 26px; border: 1px solid #57534e; background: #44403c; color: #d6d3d1; border-radius: 6px; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .qty-btn:hover { background: #57534e; }
+        .qty-num { width: 30px; text-align: center; font-size: 14px; font-weight: 700; color: #fafaf9; }
+        .order-item-info { flex: 1; }
+        .order-item-name { font-size: 13px; font-weight: 600; color: #fafaf9; }
+        .order-item-note { font-size: 11px; color: #78716c; margin-top: 2px; }
+        .order-item-price { font-size: 14px; font-weight: 700; color: #fb923c; white-space: nowrap; }
+        .remove-btn { color: #78716c; background: none; border: none; font-size: 16px; cursor: pointer; padding: 4px; }
+        .remove-btn:hover { color: #ef4444; }
+
+        /* Order Summary */
+        .order-summary { border-top: 1px solid #44403c; padding: 16px 20px; background: #1c1917; }
+        .summary-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 13px; color: #a8a29e; }
+        .summary-row.total { font-size: 20px; font-weight: 800; color: #fafaf9; padding: 12px 0 4px; border-top: 1px solid #44403c; margin-top: 6px; }
+        .summary-row.total .total-amount { color: #fb923c; }
+
+        /* Payment Buttons */
+        .payment-buttons { padding: 12px 20px 16px; background: #292524; display: flex; gap: 8px; }
+        .pay-btn { flex: 1; padding: 14px 8px; border: none; border-radius: 10px; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.15s; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .pay-btn:hover { transform: translateY(-1px); }
+        .pay-btn:active { transform: translateY(0); }
+        .pay-btn.cash { background: linear-gradient(135deg, #22c55e, #16a34a); color: #fff; }
+        .pay-btn.card { background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; }
+        .pay-btn.sinpe { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: #fff; }
+        .pay-btn .pay-icon { font-size: 20px; }
+        .pay-btn .pay-label { font-size: 11px; font-weight: 500; opacity: 0.85; }
+
+        @media (max-width: 900px) {
+            .order-panel { width: 300px; }
+            .menu-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+        }
+        @media (max-width: 700px) {
+            .pos-main { flex-direction: column; }
+            .order-panel { width: 100%; height: 50%; border-left: none; border-top: 1px solid #44403c; }
+            .menu-panel { height: 50%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="back-link"><a href="../index.html">&larr; Volver al portafolio</a></div>
+    <div class="app">
+        <!-- Top Bar -->
+        <header class="pos-topbar">
+            <div class="pos-topbar-left">
+                <div class="pos-logo">Caja<span>Viva</span></div>
+                <div class="table-selector">
+                    <div>
+                        <div class="table-num">Mesa 5</div>
+                        <div class="table-label">Terraza · 4 personas</div>
+                    </div>
+                    <span class="arrow">▼</span>
+                </div>
+            </div>
+            <div class="pos-topbar-center">
+                <button class="tab-btn active">Menú</button>
+                <button class="tab-btn">Mesas</button>
+                <button class="tab-btn">Cocina</button>
+                <button class="tab-btn">Caja</button>
+            </div>
+            <div class="pos-topbar-right">
+                <div class="clock">14:32</div>
+                <div class="waiter-info">
+                    <div>
+                        <div class="waiter-name">Valeria Chaves</div>
+                        <div class="waiter-role">Mesera</div>
+                    </div>
+                    <div class="waiter-avatar">VC</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="pos-main">
+            <!-- Menu Grid -->
+            <div class="menu-panel">
+                <div class="category-bar">
+                    <span class="cat-chip active">Todo</span>
+                    <span class="cat-chip">Entradas</span>
+                    <span class="cat-chip">Platos fuertes</span>
+                    <span class="cat-chip">Ensaladas</span>
+                    <span class="cat-chip">Pastas</span>
+                    <span class="cat-chip">Bebidas</span>
+                    <span class="cat-chip">Postres</span>
+                </div>
+                <div class="menu-grid">
+                    <div class="menu-item">
+                        <div class="menu-icon">🍔</div>
+                        <div class="menu-item-name">Hamburguesa Clásica</div>
+                        <div class="menu-item-price">$8.50</div>
+                        <div class="menu-item-time">~12 min</div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-icon">🍕</div>
+                        <div class="menu-item-name">Pizza Margherita</div>
+                        <div class="menu-item-price">$12.00</div>
+                        <div class="menu-item-time">~18 min</div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-icon">🥗</div>
+                        <div class="menu-item-name">César Salad</div>
+                        <div class="menu-item-price">$7.50</div>
+                        <div class="menu-item-time">~6 min</div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-icon">🍝</div>
+                        <div class="menu-item-name">Pasta Alfredo</div>
+                        <div class="menu-item-price">$11.00</div>
+                        <div class="menu-item-time">~15 min</div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-icon">🌮</div>
+                        <div class="menu-item-name">Tacos de Pescado</div>
+                        <div class="menu-item-price">$9.50</div>
+                        <div class="menu-item-time">~10 min</div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-icon">🥩</div>
+                        <div class="menu-item-name">Lomito a la Parrilla</div>
+                        <div class="menu-item-price">$16.00</div>
+                        <div class="menu-item-time">~22 min</div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-icon">🍤</div>
+                        <div class="menu-item-name">Camarones al Ajillo</div>
+                        <div class="menu-item-price">$14.50</div>
+                        <div class="menu-item-time">~14 min</div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-icon">🥤</div>
+                        <div class="menu-item-name">Batido Natural</div>
+                        <div class="menu-item-price">$4.00</div>
+                        <div class="menu-item-time">~3 min</div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-icon">🍰</div>
+                        <div class="menu-item-name">Tres Leches</div>
+                        <div class="menu-item-price">$6.00</div>
+                        <div class="menu-item-time">~2 min</div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-icon">☕</div>
+                        <div class="menu-item-name">Café Costarricense</div>
+                        <div class="menu-item-price">$3.50</div>
+                        <div class="menu-item-time">~4 min</div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-icon">🍺</div>
+                        <div class="menu-item-name">Imperial (cerveza)</div>
+                        <div class="menu-item-price">$4.50</div>
+                        <div class="menu-item-time">~1 min</div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-icon">🍗</div>
+                        <div class="menu-item-name">Alitas BBQ</div>
+                        <div class="menu-item-price">$8.00</div>
+                        <div class="menu-item-time">~16 min</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Panel -->
+            <div class="order-panel">
+                <div class="order-header">
+                    <h3>Orden actual</h3>
+                    <span class="order-count">5 items</span>
+                </div>
+                <div class="order-items">
+                    <div class="order-item">
+                        <div class="qty-control">
+                            <button class="qty-btn">-</button>
+                            <span class="qty-num">2</span>
+                            <button class="qty-btn">+</button>
+                        </div>
+                        <div class="order-item-info">
+                            <div class="order-item-name">Hamburguesa Clásica</div>
+                            <div class="order-item-note">1 sin cebolla</div>
+                        </div>
+                        <div class="order-item-price">$17.00</div>
+                        <button class="remove-btn">×</button>
+                    </div>
+                    <div class="order-item">
+                        <div class="qty-control">
+                            <button class="qty-btn">-</button>
+                            <span class="qty-num">1</span>
+                            <button class="qty-btn">+</button>
+                        </div>
+                        <div class="order-item-info">
+                            <div class="order-item-name">Pizza Margherita</div>
+                            <div class="order-item-note">Extra queso</div>
+                        </div>
+                        <div class="order-item-price">$12.00</div>
+                        <button class="remove-btn">×</button>
+                    </div>
+                    <div class="order-item">
+                        <div class="qty-control">
+                            <button class="qty-btn">-</button>
+                            <span class="qty-num">1</span>
+                            <button class="qty-btn">+</button>
+                        </div>
+                        <div class="order-item-info">
+                            <div class="order-item-name">César Salad</div>
+                        </div>
+                        <div class="order-item-price">$7.50</div>
+                        <button class="remove-btn">×</button>
+                    </div>
+                    <div class="order-item">
+                        <div class="qty-control">
+                            <button class="qty-btn">-</button>
+                            <span class="qty-num">2</span>
+                            <button class="qty-btn">+</button>
+                        </div>
+                        <div class="order-item-info">
+                            <div class="order-item-name">Imperial (cerveza)</div>
+                        </div>
+                        <div class="order-item-price">$9.00</div>
+                        <button class="remove-btn">×</button>
+                    </div>
+                    <div class="order-item">
+                        <div class="qty-control">
+                            <button class="qty-btn">-</button>
+                            <span class="qty-num">1</span>
+                            <button class="qty-btn">+</button>
+                        </div>
+                        <div class="order-item-info">
+                            <div class="order-item-name">Tres Leches</div>
+                        </div>
+                        <div class="order-item-price">$6.00</div>
+                        <button class="remove-btn">×</button>
+                    </div>
+                </div>
+
+                <!-- Summary -->
+                <div class="order-summary">
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span>$51.50</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>IVA (13%)</span>
+                        <span>$6.70</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Servicio (10%)</span>
+                        <span>$5.15</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total</span>
+                        <span class="total-amount">$63.35</span>
+                    </div>
+                </div>
+
+                <!-- Payment Buttons -->
+                <div class="payment-buttons">
+                    <button class="pay-btn cash">
+                        <span class="pay-icon">💵</span>
+                        Efectivo
+                        <span class="pay-label">Cash</span>
+                    </button>
+                    <button class="pay-btn card">
+                        <span class="pay-icon">💳</span>
+                        Tarjeta
+                        <span class="pay-label">Visa/MC</span>
+                    </button>
+                    <button class="pay-btn sinpe">
+                        <span class="pay-icon">📱</span>
+                        SINPE
+                        <span class="pay-label">Móvil</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

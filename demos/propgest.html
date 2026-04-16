@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PropGest — Gestión de Propiedades</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:#f0f4f4;color:#1e293b;min-height:100vh;display:flex}
+a{text-decoration:none;color:inherit}
+
+.back-link{position:fixed;top:16px;left:16px;z-index:999;font-size:13px;color:#0d9488;font-weight:500;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.95);padding:6px 14px;border-radius:20px;box-shadow:0 2px 8px rgba(0,0,0,.1);backdrop-filter:blur(6px)}
+.back-link:hover{background:#f0fdfa}
+
+.sidebar{width:240px;background:#0f172a;color:#cbd5e1;padding:24px 0;display:flex;flex-direction:column;flex-shrink:0;min-height:100vh}
+.sidebar-logo{padding:0 24px 28px;font-size:22px;font-weight:700;color:#fff;letter-spacing:-.5px;display:flex;align-items:center;gap:10px}
+.sidebar-logo .icon{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#14b8a6,#0d9488);display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff}
+.sidebar-nav{display:flex;flex-direction:column;gap:2px}
+.sidebar-item{padding:10px 24px;font-size:14px;font-weight:500;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .2s;border-left:3px solid transparent}
+.sidebar-item:hover{background:rgba(255,255,255,.05);color:#fff}
+.sidebar-item.active{background:rgba(20,184,166,.1);color:#5eead4;border-left-color:#14b8a6}
+.sidebar-item .icon{font-size:18px;width:22px;text-align:center}
+.sidebar-divider{height:1px;background:#1e293b;margin:16px 24px}
+.sidebar-footer{margin-top:auto;padding:20px 24px;border-top:1px solid #1e293b}
+.sidebar-user{display:flex;align-items:center;gap:10px}
+.sidebar-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#14b8a6,#0d9488);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600}
+.sidebar-user-info .name{font-size:13px;font-weight:600;color:#fff}
+.sidebar-user-info .role{font-size:11px;color:#64748b}
+
+.main{flex:1;padding:28px 32px;overflow-y:auto}
+.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:16px}
+.top-bar h1{font-size:24px;font-weight:700;color:#0f172a}
+.top-actions{display:flex;gap:10px}
+.btn{padding:9px 18px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:inherit}
+.btn-primary{background:#0d9488;color:#fff}
+.btn-primary:hover{background:#0f766e}
+.btn-outline{background:#fff;color:#0f172a;border:1px solid #d1d5db}
+.btn-outline:hover{border-color:#0d9488;color:#0d9488}
+
+.summary-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:28px}
+.summary-card{background:#fff;border-radius:14px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.summary-card .label{font-size:12px;color:#64748b;font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+.summary-card .value{font-size:28px;font-weight:700;color:#0f172a;margin:4px 0}
+.summary-card .change{font-size:12px;font-weight:500;display:flex;align-items:center;gap:4px}
+.summary-card .change.up{color:#059669}
+.summary-card .change.down{color:#dc2626}
+.summary-card.highlight{background:linear-gradient(135deg,#0d9488,#14b8a6);color:#fff}
+.summary-card.highlight .label{color:rgba(255,255,255,.8)}
+.summary-card.highlight .value{color:#fff}
+.summary-card.highlight .change{color:#d1fae5}
+
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.section-header h2{font-size:17px;font-weight:600}
+.filter-tabs{display:flex;gap:6px}
+.filter-tab{padding:6px 14px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;background:#e2e8f0;color:#475569;border:none;font-family:inherit}
+.filter-tab.active{background:#0d9488;color:#fff}
+
+.property-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px}
+.property-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06);transition:transform .2s,box-shadow .2s;cursor:pointer}
+.property-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.1)}
+.property-img{height:140px;position:relative;overflow:hidden}
+.property-img .gradient{position:absolute;inset:0}
+.img1 .gradient{background:linear-gradient(135deg,#a7f3d0 0%,#6ee7b7 50%,#34d399 100%)}
+.img2 .gradient{background:linear-gradient(135deg,#bae6fd 0%,#7dd3fc 50%,#38bdf8 100%)}
+.img3 .gradient{background:linear-gradient(135deg,#fde68a 0%,#fcd34d 50%,#fbbf24 100%)}
+.img4 .gradient{background:linear-gradient(135deg,#c7d2fe 0%,#a5b4fc 50%,#818cf8 100%)}
+.img5 .gradient{background:linear-gradient(135deg,#fecaca 0%,#fca5a5 50%,#f87171 100%)}
+.img6 .gradient{background:linear-gradient(135deg,#99f6e4 0%,#5eead4 50%,#2dd4bf 100%)}
+.property-img .type-badge{position:absolute;top:12px;left:12px;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;background:rgba(0,0,0,.5);color:#fff;backdrop-filter:blur(4px)}
+.property-img .status-badge{position:absolute;top:12px;right:12px;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600}
+.status-badge.ocupado{background:#d1fae5;color:#065f46}
+.status-badge.disponible{background:#dbeafe;color:#1e40af}
+.status-badge.mantenimiento{background:#fef3c7;color:#92400e}
+.property-body{padding:16px}
+.property-address{font-size:15px;font-weight:600;margin-bottom:4px}
+.property-zone{font-size:12px;color:#64748b;margin-bottom:12px}
+.property-details{display:flex;gap:16px;margin-bottom:12px}
+.property-detail{font-size:12px;color:#64748b;display:flex;align-items:center;gap:4px}
+.property-footer{display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid #f1f5f9}
+.property-rent{font-size:18px;font-weight:700;color:#0d9488}
+.property-rent span{font-size:12px;font-weight:400;color:#94a3b8}
+.property-tenant{font-size:12px;color:#475569;display:flex;align-items:center;gap:6px}
+.tenant-dot{width:8px;height:8px;border-radius:50%;background:#10b981}
+
+@media(max-width:768px){
+  body{flex-direction:column}
+  .sidebar{width:100%;min-height:auto;flex-direction:row;padding:12px;overflow-x:auto}
+  .sidebar-nav{flex-direction:row}
+  .sidebar-footer{display:none}
+  .sidebar-logo{padding:0 12px 0 0}
+  .property-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<a href="../#portafolio" class="back-link">← Volver al portafolio</a>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="icon">🏠</div>
+    PropGest
+  </div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-item active"><span class="icon">📊</span>Dashboard</div>
+    <div class="sidebar-item"><span class="icon">🏢</span>Propiedades</div>
+    <div class="sidebar-item"><span class="icon">👤</span>Inquilinos</div>
+    <div class="sidebar-item"><span class="icon">📄</span>Contratos</div>
+    <div class="sidebar-item"><span class="icon">💰</span>Cobros</div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-item"><span class="icon">🔧</span>Mantenimiento</div>
+    <div class="sidebar-item"><span class="icon">📈</span>Reportes</div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="sidebar-avatar">RC</div>
+      <div class="sidebar-user-info">
+        <div class="name">Roberto Campos</div>
+        <div class="role">Administrador</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="top-bar">
+    <h1>Dashboard de Propiedades</h1>
+    <div class="top-actions">
+      <button class="btn btn-outline">Exportar</button>
+      <button class="btn btn-primary">+ Nueva propiedad</button>
+    </div>
+  </div>
+
+  <div class="summary-cards">
+    <div class="summary-card highlight">
+      <div class="label">Total propiedades</div>
+      <div class="value">47</div>
+      <div class="change up">↑ 3 este mes</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Tasa de ocupación</div>
+      <div class="value">89%</div>
+      <div class="change up">↑ 2.3% vs mes anterior</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Cobros pendientes</div>
+      <div class="value" style="color:#dc2626">$4,200</div>
+      <div class="change down">↑ 3 inquilinos</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Ingresos mensuales</div>
+      <div class="value">$38,450</div>
+      <div class="change up">↑ 5.1% vs mes anterior</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <h2>Propiedades recientes</h2>
+    <div class="filter-tabs">
+      <button class="filter-tab active">Todas</button>
+      <button class="filter-tab">Ocupadas</button>
+      <button class="filter-tab">Disponibles</button>
+      <button class="filter-tab">Mantenimiento</button>
+    </div>
+  </div>
+
+  <div class="property-grid">
+    <!-- Card 1 -->
+    <div class="property-card">
+      <div class="property-img img1">
+        <div class="gradient"></div>
+        <span class="type-badge">Apartamento</span>
+        <span class="status-badge ocupado">Ocupado</span>
+      </div>
+      <div class="property-body">
+        <div class="property-address">Condominio Vista Real, Apt 4B</div>
+        <div class="property-zone">Escazú, San José</div>
+        <div class="property-details">
+          <span class="property-detail">🛏 2 hab</span>
+          <span class="property-detail">🚿 1 baño</span>
+          <span class="property-detail">📐 78 m²</span>
+        </div>
+        <div class="property-footer">
+          <div class="property-rent">₡485,000 <span>/mes</span></div>
+          <div class="property-tenant"><span class="tenant-dot"></span>María Solano</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="property-card">
+      <div class="property-img img2">
+        <div class="gradient"></div>
+        <span class="type-badge">Casa</span>
+        <span class="status-badge ocupado">Ocupado</span>
+      </div>
+      <div class="property-body">
+        <div class="property-address">Residencial Los Laureles, Casa 12</div>
+        <div class="property-zone">Santa Ana, San José</div>
+        <div class="property-details">
+          <span class="property-detail">🛏 3 hab</span>
+          <span class="property-detail">🚿 2 baños</span>
+          <span class="property-detail">📐 145 m²</span>
+        </div>
+        <div class="property-footer">
+          <div class="property-rent">₡750,000 <span>/mes</span></div>
+          <div class="property-tenant"><span class="tenant-dot"></span>Andrés Gutiérrez</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="property-card">
+      <div class="property-img img3">
+        <div class="gradient"></div>
+        <span class="type-badge">Local Comercial</span>
+        <span class="status-badge disponible">Disponible</span>
+      </div>
+      <div class="property-body">
+        <div class="property-address">Centro Comercial Paseo, Local 7</div>
+        <div class="property-zone">Heredia Centro</div>
+        <div class="property-details">
+          <span class="property-detail">📐 62 m²</span>
+          <span class="property-detail">🅿 2 parqueos</span>
+        </div>
+        <div class="property-footer">
+          <div class="property-rent">₡520,000 <span>/mes</span></div>
+          <div class="property-tenant" style="color:#94a3b8">Sin inquilino</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="property-card">
+      <div class="property-img img4">
+        <div class="gradient"></div>
+        <span class="type-badge">Apartamento</span>
+        <span class="status-badge mantenimiento">En mantenimiento</span>
+      </div>
+      <div class="property-body">
+        <div class="property-address">Torre Sabana Norte, Piso 8-A</div>
+        <div class="property-zone">Sabana Norte, San José</div>
+        <div class="property-details">
+          <span class="property-detail">🛏 1 hab</span>
+          <span class="property-detail">🚿 1 baño</span>
+          <span class="property-detail">📐 52 m²</span>
+        </div>
+        <div class="property-footer">
+          <div class="property-rent">₡380,000 <span>/mes</span></div>
+          <div class="property-tenant" style="color:#f59e0b">🔧 Pintura general</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 5 -->
+    <div class="property-card">
+      <div class="property-img img5">
+        <div class="gradient"></div>
+        <span class="type-badge">Casa</span>
+        <span class="status-badge ocupado">Ocupado</span>
+      </div>
+      <div class="property-body">
+        <div class="property-address">Barrio Los Ángeles, Casa 45</div>
+        <div class="property-zone">San Pedro, Montes de Oca</div>
+        <div class="property-details">
+          <span class="property-detail">🛏 4 hab</span>
+          <span class="property-detail">🚿 3 baños</span>
+          <span class="property-detail">📐 210 m²</span>
+        </div>
+        <div class="property-footer">
+          <div class="property-rent">₡920,000 <span>/mes</span></div>
+          <div class="property-tenant"><span class="tenant-dot"></span>Familia Rodríguez</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 6 -->
+    <div class="property-card">
+      <div class="property-img img6">
+        <div class="gradient"></div>
+        <span class="type-badge">Apartamento</span>
+        <span class="status-badge ocupado">Ocupado</span>
+      </div>
+      <div class="property-body">
+        <div class="property-address">Condominio Monte Verde, Apt 2C</div>
+        <div class="property-zone">Belén, Heredia</div>
+        <div class="property-details">
+          <span class="property-detail">🛏 2 hab</span>
+          <span class="property-detail">🚿 2 baños</span>
+          <span class="property-detail">📐 85 m²</span>
+        </div>
+        <div class="property-footer">
+          <div class="property-rent">₡510,000 <span>/mes</span></div>
+          <div class="property-tenant"><span class="tenant-dot"></span>Laura Vindas</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

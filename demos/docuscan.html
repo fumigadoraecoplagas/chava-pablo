@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocuScan AI — Escáner Inteligente de Documentos</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'DM Sans', sans-serif; background: #0f0a1a; min-height: 100vh; color: #e2e0ec; }
+
+        .back-link {
+            position: fixed; top: 20px; left: 20px; z-index: 100;
+            color: #a78bfa; text-decoration: none; font-weight: 500; font-size: 14px;
+            background: rgba(255,255,255,0.08); padding: 8px 16px; border-radius: 20px;
+            backdrop-filter: blur(10px); border: 1px solid rgba(167,139,250,0.2);
+            transition: all 0.2s;
+        }
+        .back-link:hover { background: #a78bfa; color: white; }
+
+        .top-bar {
+            background: rgba(15,10,26,0.95); backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(167,139,250,0.15);
+            padding: 16px 40px; display: flex; align-items: center; justify-content: space-between;
+        }
+        .logo {
+            display: flex; align-items: center; gap: 12px;
+            font-size: 20px; font-weight: 700;
+        }
+        .logo .icon {
+            width: 38px; height: 38px; border-radius: 10px;
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            display: flex; align-items: center; justify-content: center; font-size: 18px;
+        }
+        .logo span { color: #a78bfa; }
+        .top-bar-right { display: flex; gap: 20px; align-items: center; font-size: 13px; color: #8b83a6; }
+        .top-bar-right .active-count {
+            background: rgba(167,139,250,0.15); padding: 5px 14px; border-radius: 20px;
+            color: #a78bfa; font-weight: 500;
+        }
+
+        .main {
+            padding: 36px 40px;
+        }
+
+        .pipeline {
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px;
+            margin-bottom: 36px; position: relative;
+        }
+
+        /* Connecting arrows */
+        .pipeline::before, .pipeline::after {
+            content: '→'; position: absolute; top: 50%; transform: translateY(-50%);
+            font-size: 28px; color: #7c3aed; font-weight: 300;
+        }
+        .pipeline::before { left: calc(33.33% - 14px); }
+        .pipeline::after { left: calc(66.66% - 14px); }
+
+        .panel {
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(167,139,250,0.12);
+            border-radius: 16px; padding: 28px; backdrop-filter: blur(10px);
+        }
+        .panel h3 {
+            font-size: 14px; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 1px; color: #a78bfa; margin-bottom: 20px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .panel h3 .step {
+            width: 24px; height: 24px; border-radius: 50%;
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; color: white;
+        }
+
+        /* Upload Zone */
+        .upload-zone {
+            border: 2px dashed rgba(167,139,250,0.3); border-radius: 12px;
+            padding: 20px; text-align: center; cursor: pointer;
+            transition: all 0.3s; background: rgba(167,139,250,0.03);
+            margin-bottom: 16px;
+        }
+        .upload-zone:hover { border-color: #a78bfa; background: rgba(167,139,250,0.08); }
+
+        .document-preview {
+            background: #fefefe; border-radius: 8px; padding: 20px;
+            color: #333; font-size: 11px; line-height: 1.8;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3); position: relative;
+            max-width: 240px; margin: 0 auto;
+        }
+        .document-preview .doc-header {
+            text-align: center; border-bottom: 2px solid #7c3aed;
+            padding-bottom: 10px; margin-bottom: 12px;
+        }
+        .document-preview .doc-header .company { font-weight: 700; font-size: 13px; color: #1a1a2e; }
+        .document-preview .doc-header .doc-type { font-size: 10px; color: #7c3aed; letter-spacing: 1px; }
+        .doc-line { display: flex; justify-content: space-between; padding: 2px 0; }
+        .doc-line .label { color: #888; }
+        .doc-line .val { font-weight: 600; color: #333; }
+        .doc-total { border-top: 1.5px solid #ddd; padding-top: 8px; margin-top: 8px; }
+        .doc-total .val { color: #7c3aed; font-size: 14px; }
+        .doc-scan-line {
+            position: absolute; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, #7c3aed, transparent);
+            animation: scan 2.5s infinite;
+        }
+        @keyframes scan { 0% { top: 10px; opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { top: calc(100% - 10px); opacity: 0; } }
+
+        .file-info {
+            font-size: 12px; color: #8b83a6; margin-top: 12px;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+
+        /* Processing Steps */
+        .processing-steps {
+            display: flex; flex-direction: column; gap: 16px;
+        }
+        .step-item {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 16px; border-radius: 10px;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(167,139,250,0.08);
+        }
+        .step-item.done { border-color: rgba(74,222,128,0.2); }
+        .step-item.active { border-color: rgba(167,139,250,0.3); background: rgba(167,139,250,0.06); }
+
+        .step-icon {
+            width: 32px; height: 32px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 14px;
+            flex-shrink: 0;
+        }
+        .step-icon.done { background: rgba(74,222,128,0.15); color: #4ade80; }
+        .step-icon.active { background: rgba(167,139,250,0.15); color: #a78bfa; }
+        .step-icon.pending { background: rgba(255,255,255,0.05); color: #555; }
+
+        .step-text { font-size: 14px; font-weight: 500; }
+        .step-text.done { color: #4ade80; }
+        .step-text.active { color: #a78bfa; }
+        .step-text.pending { color: #555; }
+
+        .spinner {
+            width: 18px; height: 18px; border: 2px solid rgba(167,139,250,0.2);
+            border-top-color: #a78bfa; border-radius: 50%;
+            animation: spin 0.8s linear infinite; margin-left: auto; flex-shrink: 0;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .progress-bar {
+            margin-top: 20px; background: rgba(255,255,255,0.06);
+            border-radius: 8px; height: 6px; overflow: hidden;
+        }
+        .progress-bar .fill {
+            height: 100%; width: 78%;
+            background: linear-gradient(90deg, #7c3aed, #a78bfa);
+            border-radius: 8px;
+            animation: progress-pulse 2s infinite;
+        }
+        @keyframes progress-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        .progress-label { font-size: 12px; color: #8b83a6; margin-top: 8px; text-align: center; }
+
+        /* Extracted Data */
+        .extracted-data {
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .data-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 14px; border-radius: 8px;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(167,139,250,0.06);
+        }
+        .data-label { font-size: 12px; color: #8b83a6; text-transform: uppercase; letter-spacing: 0.5px; }
+        .data-value { font-size: 14px; font-weight: 600; color: #e2e0ec; }
+        .data-value.highlight { color: #a78bfa; font-size: 16px; }
+
+        .action-btn {
+            width: 100%; padding: 14px; border: none; border-radius: 10px;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white; font-size: 15px; font-weight: 600;
+            cursor: pointer; margin-top: 8px; font-family: 'DM Sans', sans-serif;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 16px rgba(34,197,94,0.3);
+        }
+        .action-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(34,197,94,0.4); }
+
+        .confidence {
+            text-align: center; margin-top: 12px; font-size: 12px; color: #8b83a6;
+        }
+        .confidence strong { color: #4ade80; }
+
+        /* Recent Documents Table */
+        .table-section {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(167,139,250,0.1);
+            border-radius: 16px; padding: 28px;
+        }
+        .table-section h3 {
+            font-size: 16px; font-weight: 600; margin-bottom: 20px; color: #e2e0ec;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        th {
+            text-align: left; font-size: 11px; text-transform: uppercase;
+            letter-spacing: 0.8px; color: #8b83a6; padding: 12px 16px;
+            border-bottom: 1px solid rgba(167,139,250,0.1);
+        }
+        td {
+            padding: 14px 16px; font-size: 13px;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+        tr:hover td { background: rgba(167,139,250,0.03); }
+
+        .badge {
+            padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 500;
+        }
+        .badge-factura { background: rgba(167,139,250,0.15); color: #a78bfa; }
+        .badge-recibo { background: rgba(59,130,246,0.15); color: #60a5fa; }
+        .badge-nota { background: rgba(251,191,36,0.15); color: #fbbf24; }
+        .badge-contrato { background: rgba(74,222,128,0.15); color: #4ade80; }
+
+        .status-ok { color: #4ade80; }
+    </style>
+</head>
+<body>
+    <a href="../#portafolio" class="back-link">← Volver al portafolio</a>
+
+    <div class="top-bar">
+        <div class="logo">
+            <div class="icon">📄</div>
+            Docu<span>Scan</span> AI
+        </div>
+        <div class="top-bar-right">
+            <span>Documentos hoy: 47</span>
+            <span class="active-count">3 en proceso</span>
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="pipeline">
+            <!-- Upload -->
+            <div class="panel">
+                <h3><span class="step">1</span> Documento</h3>
+                <div class="upload-zone">
+                    <div class="document-preview">
+                        <div class="doc-scan-line"></div>
+                        <div class="doc-header">
+                            <div class="company">DISTRIBUIDORA NACIONAL S.A.</div>
+                            <div class="doc-type">FACTURA ELECTRÓNICA</div>
+                        </div>
+                        <div class="doc-line"><span class="label">No.</span><span class="val">FE-004821</span></div>
+                        <div class="doc-line"><span class="label">Fecha</span><span class="val">12/04/2026</span></div>
+                        <div class="doc-line"><span class="label">Cliente</span><span class="val">Acme Corp</span></div>
+                        <div style="height: 8px"></div>
+                        <div class="doc-line"><span class="label">Producto A</span><span class="val">$450.00</span></div>
+                        <div class="doc-line"><span class="label">Producto B</span><span class="val">$380.00</span></div>
+                        <div class="doc-line"><span class="label">Servicio C</span><span class="val">$420.00</span></div>
+                        <div class="doc-total">
+                            <div class="doc-line"><span class="label">Subtotal</span><span class="val">$1,250.00</span></div>
+                            <div class="doc-line"><span class="label">IVA 13%</span><span class="val">$162.50</span></div>
+                            <div class="doc-line"><span class="label">Total</span><span class="val" style="color:#7c3aed; font-size:13px;">$1,412.50</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="file-info">📎 factura_dist_nacional.pdf · 1.2 MB</div>
+            </div>
+
+            <!-- Processing -->
+            <div class="panel">
+                <h3><span class="step">2</span> Procesamiento</h3>
+                <div class="processing-steps">
+                    <div class="step-item done">
+                        <div class="step-icon done">✓</div>
+                        <span class="step-text done">Leyendo documento...</span>
+                    </div>
+                    <div class="step-item done">
+                        <div class="step-icon done">✓</div>
+                        <span class="step-text done">Extrayendo datos...</span>
+                    </div>
+                    <div class="step-item done">
+                        <div class="step-icon done">✓</div>
+                        <span class="step-text done">Validando formato...</span>
+                    </div>
+                    <div class="step-item active">
+                        <div class="step-icon active">⟳</div>
+                        <span class="step-text active">Clasificando...</span>
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+                <div class="progress-bar"><div class="fill"></div></div>
+                <div class="progress-label">78% completado</div>
+            </div>
+
+            <!-- Results -->
+            <div class="panel">
+                <h3><span class="step">3</span> Datos Extraídos</h3>
+                <div class="extracted-data">
+                    <div class="data-row">
+                        <span class="data-label">Tipo</span>
+                        <span class="data-value">Factura</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-label">Proveedor</span>
+                        <span class="data-value">Distribuidora Nacional S.A.</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-label">Fecha</span>
+                        <span class="data-value">12/04/2026</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-label">Subtotal</span>
+                        <span class="data-value">$1,250.00</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-label">IVA</span>
+                        <span class="data-value">$162.50</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-label">Total</span>
+                        <span class="data-value highlight">$1,412.50</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-label">Número</span>
+                        <span class="data-value">FE-004821</span>
+                    </div>
+                </div>
+                <button class="action-btn">✓ Enviar a contabilidad</button>
+                <div class="confidence">Precisión: <strong>98.7%</strong></div>
+            </div>
+        </div>
+
+        <!-- Recent Documents -->
+        <div class="table-section">
+            <h3>Documentos procesados recientemente</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Documento</th>
+                        <th>Tipo</th>
+                        <th>Proveedor / Emisor</th>
+                        <th>Monto</th>
+                        <th>Precisión</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>FE-004821</td>
+                        <td><span class="badge badge-factura">Factura</span></td>
+                        <td>Distribuidora Nacional S.A.</td>
+                        <td>$1,412.50</td>
+                        <td>98.7%</td>
+                        <td class="status-ok">✓ Enviado</td>
+                    </tr>
+                    <tr>
+                        <td>REC-08834</td>
+                        <td><span class="badge badge-recibo">Recibo</span></td>
+                        <td>ICE Telecomunicaciones</td>
+                        <td>$89.00</td>
+                        <td>99.1%</td>
+                        <td class="status-ok">✓ Enviado</td>
+                    </tr>
+                    <tr>
+                        <td>NC-002190</td>
+                        <td><span class="badge badge-nota">Nota Crédito</span></td>
+                        <td>Grupo Ferretero S.A.</td>
+                        <td>-$340.00</td>
+                        <td>97.2%</td>
+                        <td class="status-ok">✓ Enviado</td>
+                    </tr>
+                    <tr>
+                        <td>FE-004819</td>
+                        <td><span class="badge badge-factura">Factura</span></td>
+                        <td>Auto Repuestos del Valle</td>
+                        <td>$2,150.00</td>
+                        <td>99.5%</td>
+                        <td class="status-ok">✓ Enviado</td>
+                    </tr>
+                    <tr>
+                        <td>CT-000412</td>
+                        <td><span class="badge badge-contrato">Contrato</span></td>
+                        <td>Servicios Legales Mora & Asoc.</td>
+                        <td>$5,000.00</td>
+                        <td>95.8%</td>
+                        <td class="status-ok">✓ Enviado</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

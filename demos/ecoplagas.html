@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoPlagas — Gestión de Servicios</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'DM Sans', sans-serif; background: #f0fdf4; color: #1e293b; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+        .back-link { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: #14532d; color: #bbf7d0; padding: 6px 20px; font-size: 13px; text-align: center; }
+        .back-link a { color: #86efac; text-decoration: none; font-weight: 500; }
+        .back-link a:hover { color: #fff; text-decoration: underline; }
+
+        .app { display: flex; flex-direction: column; height: 100vh; padding-top: 30px; }
+
+        /* Top Nav */
+        .topnav { background: #fff; border-bottom: 1px solid #d1fae5; padding: 0 28px; height: 60px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+        .topnav-left { display: flex; align-items: center; gap: 24px; }
+        .logo { font-size: 20px; font-weight: 700; color: #15803d; display: flex; align-items: center; gap: 8px; }
+        .logo .leaf { font-size: 24px; }
+        .logo span { color: #166534; }
+        .date-selector { display: flex; align-items: center; gap: 10px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 7px 14px; font-size: 13px; color: #166534; font-weight: 500; cursor: pointer; }
+        .date-selector .arrow { color: #16a34a; font-weight: 700; cursor: pointer; padding: 0 4px; }
+        .topnav-right { display: flex; align-items: center; gap: 16px; }
+        .user-pill { display: flex; align-items: center; gap: 10px; background: #f0fdf4; border: 1px solid #d1fae5; border-radius: 24px; padding: 6px 16px 6px 8px; }
+        .user-avatar { width: 30px; height: 30px; background: linear-gradient(135deg, #22c55e, #16a34a); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 12px; font-weight: 600; }
+        .user-pill .name { font-size: 13px; font-weight: 500; color: #166534; }
+        .nav-links { display: flex; gap: 4px; }
+        .nav-links a { padding: 7px 14px; font-size: 13px; font-weight: 500; color: #64748b; text-decoration: none; border-radius: 6px; transition: all 0.15s; }
+        .nav-links a:hover { background: #f0fdf4; color: #16a34a; }
+        .nav-links a.active { background: #dcfce7; color: #15803d; }
+
+        /* Main content */
+        .main-content { flex: 1; display: flex; overflow: hidden; }
+
+        /* Calendar */
+        .calendar-panel { flex: 1; padding: 24px; overflow-y: auto; }
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .calendar-header h2 { font-size: 18px; font-weight: 700; color: #0f172a; }
+        .view-toggle { display: flex; gap: 2px; background: #f1f5f9; border-radius: 8px; padding: 3px; }
+        .view-toggle button { border: none; background: none; padding: 6px 14px; font-size: 12px; font-family: inherit; font-weight: 500; border-radius: 6px; cursor: pointer; color: #64748b; }
+        .view-toggle button.active { background: #fff; color: #15803d; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+
+        .time-grid { display: flex; flex-direction: column; gap: 0; }
+        .time-row { display: flex; min-height: 64px; border-bottom: 1px solid #f1f5f9; }
+        .time-label { width: 70px; font-size: 12px; color: #94a3b8; font-weight: 500; padding-top: 4px; flex-shrink: 0; }
+        .time-slots { flex: 1; position: relative; padding: 4px 0; }
+
+        .appointment { border-radius: 8px; padding: 10px 14px; margin-bottom: 4px; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; }
+        .appointment:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .appt-green { background: linear-gradient(135deg, #dcfce7, #bbf7d0); border-left: 4px solid #22c55e; }
+        .appt-blue { background: linear-gradient(135deg, #dbeafe, #bfdbfe); border-left: 4px solid #3b82f6; }
+        .appt-amber { background: linear-gradient(135deg, #fef3c7, #fde68a); border-left: 4px solid #f59e0b; }
+        .appt-purple { background: linear-gradient(135deg, #f3e8ff, #e9d5ff); border-left: 4px solid #a855f7; }
+        .appt-red { background: linear-gradient(135deg, #fee2e2, #fecaca); border-left: 4px solid #ef4444; }
+        .appt-title { font-size: 13px; font-weight: 600; color: #1e293b; margin-bottom: 2px; }
+        .appt-detail { font-size: 11px; color: #64748b; }
+        .appt-tech { font-size: 11px; color: #475569; font-weight: 500; margin-top: 3px; }
+
+        /* Right Panel */
+        .detail-panel { width: 340px; background: #fff; border-left: 1px solid #e2e8f0; padding: 24px; overflow-y: auto; flex-shrink: 0; }
+        .detail-panel h3 { font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #dcfce7; }
+        .detail-card { background: #f0fdf4; border-radius: 12px; padding: 20px; border: 1px solid #bbf7d0; margin-bottom: 20px; }
+        .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #dcfce7; }
+        .detail-row:last-child { border-bottom: none; }
+        .detail-label { font-size: 12px; color: #64748b; font-weight: 500; }
+        .detail-value { font-size: 13px; color: #1e293b; font-weight: 600; text-align: right; max-width: 60%; }
+        .status-active { display: inline-flex; align-items: center; gap: 6px; background: #dcfce7; color: #15803d; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .status-active .dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        .detail-actions { display: flex; flex-direction: column; gap: 8px; }
+        .btn-primary { background: linear-gradient(135deg, #22c55e, #16a34a); color: #fff; border: none; padding: 11px 20px; border-radius: 8px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; text-align: center; transition: opacity 0.15s; }
+        .btn-primary:hover { opacity: 0.9; }
+        .btn-secondary { background: #fff; color: #16a34a; border: 1px solid #bbf7d0; padding: 10px 20px; border-radius: 8px; font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; text-align: center; }
+        .btn-secondary:hover { background: #f0fdf4; }
+
+        .map-placeholder { background: linear-gradient(135deg, #e2e8f0, #cbd5e1); border-radius: 10px; height: 140px; display: flex; align-items: center; justify-content: center; color: #64748b; font-size: 13px; font-weight: 500; margin-top: 16px; position: relative; overflow: hidden; }
+        .map-placeholder::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 20px, rgba(255,255,255,0.3) 20px, rgba(255,255,255,0.3) 21px), repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(255,255,255,0.3) 20px, rgba(255,255,255,0.3) 21px); }
+        .map-pin { position: relative; z-index: 1; font-size: 28px; }
+
+        /* Stats Bar */
+        .stats-bar { background: #fff; border-top: 1px solid #d1fae5; padding: 0 28px; height: 56px; display: flex; align-items: center; justify-content: center; gap: 48px; flex-shrink: 0; }
+        .stat-item { display: flex; align-items: center; gap: 10px; }
+        .stat-number { font-size: 22px; font-weight: 700; }
+        .stat-number.total { color: #1e293b; }
+        .stat-number.done { color: #16a34a; }
+        .stat-number.route { color: #2563eb; }
+        .stat-number.pending { color: #d97706; }
+        .stat-label { font-size: 12px; color: #64748b; font-weight: 500; }
+
+        @media (max-width: 900px) {
+            .detail-panel { display: none; }
+            .nav-links { display: none; }
+        }
+        @media (max-width: 600px) {
+            .stats-bar { gap: 20px; padding: 0 12px; }
+            .stat-number { font-size: 18px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="back-link"><a href="../index.html">&larr; Volver al portafolio</a></div>
+    <div class="app">
+        <!-- Top Nav -->
+        <header class="topnav">
+            <div class="topnav-left">
+                <div class="logo"><span class="leaf">🍃</span> Eco<span>Plagas</span></div>
+                <div class="nav-links">
+                    <a href="#" class="active">Agenda</a>
+                    <a href="#">Clientes</a>
+                    <a href="#">Técnicos</a>
+                    <a href="#">Productos</a>
+                    <a href="#">Reportes</a>
+                </div>
+            </div>
+            <div class="topnav-right">
+                <div class="date-selector">
+                    <span class="arrow">&lsaquo;</span>
+                    Martes 15 de Abril, 2026
+                    <span class="arrow">&rsaquo;</span>
+                </div>
+                <div class="user-pill">
+                    <div class="user-avatar">RM</div>
+                    <span class="name">Roberto Mora</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Calendar -->
+            <div class="calendar-panel">
+                <div class="calendar-header">
+                    <h2>Agenda del día</h2>
+                    <div class="view-toggle">
+                        <button>Semana</button>
+                        <button class="active">Día</button>
+                        <button>Lista</button>
+                    </div>
+                </div>
+
+                <div class="time-grid">
+                    <div class="time-row">
+                        <div class="time-label">7:00 AM</div>
+                        <div class="time-slots">
+                            <div class="appointment appt-green">
+                                <div class="appt-title">Fumigación general — Residencia</div>
+                                <div class="appt-detail">María López · San José Centro, 200m norte del Parque Central</div>
+                                <div class="appt-tech">👤 Carlos Ramírez · 7:00 - 8:30</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="time-row">
+                        <div class="time-label">8:00 AM</div>
+                        <div class="time-slots">
+                            <div class="appointment appt-blue">
+                                <div class="appt-title">Control de roedores — Comercial</div>
+                                <div class="appt-detail">SuperMercado Don Julio · Heredia, frente al Mall Oxígeno</div>
+                                <div class="appt-tech">👤 Andrea Villalobos · 8:00 - 9:30</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="time-row">
+                        <div class="time-label">9:00 AM</div>
+                        <div class="time-slots">
+                            <div class="appointment appt-amber">
+                                <div class="appt-title">Inspección termitas — Residencia</div>
+                                <div class="appt-detail">Jorge Castillo · Escazú, Guachipelín, cond. Valle del Sol</div>
+                                <div class="appt-tech">👤 Carlos Ramírez · 9:00 - 10:00</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="time-row">
+                        <div class="time-label">10:00 AM</div>
+                        <div class="time-slots">
+                            <div class="appointment appt-green">
+                                <div class="appt-title">Fumigación cucarachas — Restaurante</div>
+                                <div class="appt-detail">Restaurante Sabor Tico · Alajuela Centro, costado norte del mercado</div>
+                                <div class="appt-tech">👤 Luis Hernández · 10:00 - 11:30</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="time-row">
+                        <div class="time-label">11:00 AM</div>
+                        <div class="time-slots">
+                            <div class="appointment appt-purple">
+                                <div class="appt-title">Control de hormigas — Oficina</div>
+                                <div class="appt-detail">Bufete Araya & Asociados · Sabana Norte, edificio Torres del Campo</div>
+                                <div class="appt-tech">👤 Andrea Villalobos · 11:00 - 12:00</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="time-row">
+                        <div class="time-label">1:00 PM</div>
+                        <div class="time-slots">
+                            <div class="appointment appt-blue">
+                                <div class="appt-title">Desratización — Bodega</div>
+                                <div class="appt-detail">Importadora Fernández · Zona Franca Coyol, bodega 14-B</div>
+                                <div class="appt-tech">👤 Luis Hernández · 1:00 - 2:30</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="time-row">
+                        <div class="time-label">3:00 PM</div>
+                        <div class="time-slots">
+                            <div class="appointment appt-red">
+                                <div class="appt-title">Urgente: Nido de avispas — Residencia</div>
+                                <div class="appt-detail">Familia Quesada · Santa Ana, Pozos, residencial Los Laureles</div>
+                                <div class="appt-tech">👤 Carlos Ramírez · 3:00 - 4:00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detail Panel -->
+            <aside class="detail-panel">
+                <h3>Detalle de cita seleccionada</h3>
+                <div class="detail-card">
+                    <div class="detail-row">
+                        <span class="detail-label">Cliente</span>
+                        <span class="detail-value">María López</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Teléfono</span>
+                        <span class="detail-value">8845-2310</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Dirección</span>
+                        <span class="detail-value">San José Centro, 200m norte del Parque Central</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Servicio</span>
+                        <span class="detail-value">Fumigación general</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Tipo</span>
+                        <span class="detail-value">Residencial</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Técnico</span>
+                        <span class="detail-value">Carlos Ramírez</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Horario</span>
+                        <span class="detail-value">7:00 - 8:30 AM</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Estado</span>
+                        <span class="detail-value"><span class="status-active"><span class="dot"></span> En ruta</span></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Monto</span>
+                        <span class="detail-value" style="color: #15803d; font-size: 15px;">₡45,000</span>
+                    </div>
+                </div>
+
+                <div class="detail-actions">
+                    <button class="btn-primary">✓ Marcar completada</button>
+                    <button class="btn-secondary">📞 Llamar cliente</button>
+                    <button class="btn-secondary">📝 Agregar nota</button>
+                </div>
+
+                <div class="map-placeholder">
+                    <span class="map-pin">📍</span>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Stats Bar -->
+        <footer class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-number total">12</span>
+                <span class="stat-label">Citas hoy</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number done">7</span>
+                <span class="stat-label">Completadas</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number route">3</span>
+                <span class="stat-label">En ruta</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number pending">2</span>
+                <span class="stat-label">Pendientes</span>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pulso — Dashboard Ejecutivo</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:#0b1120;color:#e2e8f0;min-height:100vh;display:flex;flex-direction:column}
+a{text-decoration:none;color:inherit}
+
+.back-link{position:fixed;top:16px;left:16px;z-index:999;font-size:13px;color:#22d3ee;font-weight:500;display:flex;align-items:center;gap:6px;background:rgba(15,23,42,.9);padding:6px 14px;border-radius:20px;box-shadow:0 2px 8px rgba(0,0,0,.3);backdrop-filter:blur(6px);border:1px solid rgba(34,211,238,.2)}
+.back-link:hover{background:rgba(34,211,238,.1)}
+
+header{background:#0f172a;border-bottom:1px solid #1e293b;padding:0 32px;height:56px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.logo{font-size:22px;font-weight:700;color:#fff;letter-spacing:-.5px;display:flex;align-items:center;gap:10px}
+.logo-dot{width:10px;height:10px;border-radius:50%;background:#22d3ee;box-shadow:0 0 12px rgba(34,211,238,.5);animation:pulse-dot 2s infinite}
+@keyframes pulse-dot{0%,100%{box-shadow:0 0 12px rgba(34,211,238,.5)}50%{box-shadow:0 0 20px rgba(34,211,238,.8)}}
+.header-right{display:flex;align-items:center;gap:16px}
+.date-selector{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:7px 14px;font-size:13px;color:#94a3b8;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:8px}
+.date-selector:hover{border-color:#22d3ee;color:#22d3ee}
+.live-badge{background:rgba(16,185,129,.15);color:#34d399;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;display:flex;align-items:center;gap:6px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#34d399;animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.header-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#06b6d4,#0891b2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600}
+
+.dashboard{flex:1;padding:24px 32px;overflow-y:auto;display:flex;flex-direction:column;gap:20px}
+
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.kpi-card{background:#1e293b;border-radius:16px;padding:20px;position:relative;overflow:hidden;border:1px solid #334155;transition:border-color .2s}
+.kpi-card:hover{border-color:rgba(34,211,238,.3)}
+.kpi-label{font-size:12px;color:#64748b;font-weight:500;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.kpi-value{font-size:32px;font-weight:700;color:#fff;display:flex;align-items:baseline;gap:10px}
+.kpi-change{font-size:13px;font-weight:600;padding:2px 8px;border-radius:6px}
+.kpi-change.up{color:#34d399;background:rgba(16,185,129,.15)}
+.kpi-change.down{color:#f87171;background:rgba(248,113,113,.15)}
+.kpi-sub{font-size:12px;color:#64748b;margin-top:6px}
+.sparkline{position:absolute;bottom:0;right:0;width:120px;height:50px;opacity:.4}
+.sparkline svg{width:100%;height:100%}
+
+.chart-area{background:#1e293b;border-radius:16px;padding:24px;border:1px solid #334155}
+.chart-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.chart-header h3{font-size:16px;font-weight:600;color:#fff}
+.chart-tabs{display:flex;gap:4px}
+.chart-tab{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;background:transparent;color:#64748b;border:none;font-family:inherit}
+.chart-tab.active{background:rgba(34,211,238,.1);color:#22d3ee}
+.revenue-chart{height:200px;position:relative;border-bottom:1px solid #334155;margin-bottom:12px}
+.chart-gradient{position:absolute;bottom:0;left:0;right:0;height:100%;background:linear-gradient(180deg,rgba(34,211,238,.15) 0%,rgba(34,211,238,0) 100%);clip-path:polygon(0% 85%, 4% 80%, 8% 75%, 12% 70%, 16% 72%, 20% 65%, 24% 60%, 28% 55%, 32% 52%, 36% 48%, 40% 50%, 44% 45%, 48% 40%, 52% 38%, 56% 35%, 60% 30%, 64% 32%, 68% 28%, 72% 25%, 76% 22%, 80% 18%, 84% 20%, 88% 15%, 92% 12%, 96% 10%, 100% 8%, 100% 100%, 0% 100%)}
+.chart-line{position:absolute;bottom:0;left:0;right:0;height:100%;background:transparent;border-top:none}
+.chart-line::after{content:'';position:absolute;bottom:0;left:0;right:0;height:100%;border-top:2px solid #22d3ee;clip-path:polygon(0% 85%, 4% 80%, 8% 75%, 12% 70%, 16% 72%, 20% 65%, 24% 60%, 28% 55%, 32% 52%, 36% 48%, 40% 50%, 44% 45%, 48% 40%, 52% 38%, 56% 35%, 60% 30%, 64% 32%, 68% 28%, 72% 25%, 76% 22%, 80% 18%, 84% 20%, 88% 15%, 92% 12%, 96% 10%, 100% 8%)}
+.chart-y-labels{position:absolute;left:0;top:0;bottom:0;display:flex;flex-direction:column;justify-content:space-between;font-size:11px;color:#475569;padding:4px 0}
+.chart-x-labels{display:flex;justify-content:space-between;font-size:11px;color:#475569;padding-top:8px}
+.grid-lines{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;pointer-events:none}
+.grid-line{border-bottom:1px dashed #1e293b33;height:0}
+
+.bottom-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.bottom-card{background:#1e293b;border-radius:16px;padding:24px;border:1px solid #334155}
+.bottom-card h3{font-size:16px;font-weight:600;color:#fff;margin-bottom:20px}
+
+.donut-container{display:flex;align-items:center;gap:28px}
+.donut{width:160px;height:160px;border-radius:50%;position:relative;background:conic-gradient(#22d3ee 0deg 126deg,#06b6d4 126deg 212deg,#0891b2 212deg 270deg,#155e75 270deg 324deg,#334155 324deg 360deg);flex-shrink:0}
+.donut::after{content:'';position:absolute;inset:35px;border-radius:50%;background:#1e293b}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1}
+.donut-center .total{font-size:22px;font-weight:700;color:#fff}
+.donut-center .label{font-size:11px;color:#64748b}
+.donut-legend{display:flex;flex-direction:column;gap:10px}
+.legend-row{display:flex;align-items:center;gap:8px;font-size:13px}
+.legend-color{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+.legend-val{margin-left:auto;font-weight:600;color:#fff;min-width:36px;text-align:right}
+
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:11px;font-weight:600;color:#475569;text-transform:uppercase;letter-spacing:.5px;padding:8px 12px;border-bottom:1px solid #334155}
+td{padding:10px 12px;font-size:13px;border-bottom:1px solid #1e293b40}
+.product-name{font-weight:500;color:#e2e8f0}
+.product-revenue{font-weight:600;color:#22d3ee}
+.product-bar-bg{width:80px;height:6px;background:#0f172a;border-radius:3px;overflow:hidden}
+.product-bar{height:100%;border-radius:3px;background:linear-gradient(90deg,#22d3ee,#06b6d4)}
+.rank{width:24px;height:24px;border-radius:6px;background:#0f172a;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#64748b}
+.change-cell{font-size:12px;font-weight:500}
+.change-cell.up{color:#34d399}
+.change-cell.down{color:#f87171}
+
+@media(max-width:900px){
+  .kpi-row{grid-template-columns:repeat(2,1fr)}
+  .bottom-row{grid-template-columns:1fr}
+  .donut-container{flex-direction:column;align-items:flex-start}
+}
+@media(max-width:500px){
+  .kpi-row{grid-template-columns:1fr}
+  .dashboard{padding:16px}
+}
+</style>
+</head>
+<body>
+<a href="../#portafolio" class="back-link">← Volver al portafolio</a>
+
+<header>
+  <div class="logo"><span class="logo-dot"></span>Pulso</div>
+  <div class="header-right">
+    <div class="live-badge"><span class="live-dot"></span>En vivo</div>
+    <div class="date-selector">📅 01 Abr — 15 Abr 2026</div>
+    <div class="header-avatar">JM</div>
+  </div>
+</header>
+
+<div class="dashboard">
+  <!-- KPI Cards -->
+  <div class="kpi-row">
+    <div class="kpi-card">
+      <div class="kpi-label">Ingresos</div>
+      <div class="kpi-value">$128K <span class="kpi-change up">↑ 12%</span></div>
+      <div class="kpi-sub">vs. $114K periodo anterior</div>
+      <div class="sparkline">
+        <svg viewBox="0 0 120 50"><polyline points="0,40 15,35 30,38 45,28 60,30 75,20 90,18 105,12 120,8" fill="none" stroke="#34d399" stroke-width="2"/></svg>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Clientes activos</div>
+      <div class="kpi-value">342 <span class="kpi-change up">↑ 8%</span></div>
+      <div class="kpi-sub">24 nuevos este mes</div>
+      <div class="sparkline">
+        <svg viewBox="0 0 120 50"><polyline points="0,38 15,36 30,34 45,30 60,28 75,25 90,22 105,18 120,15" fill="none" stroke="#22d3ee" stroke-width="2"/></svg>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Ticket promedio</div>
+      <div class="kpi-value">$374 <span class="kpi-change down">↓ 3%</span></div>
+      <div class="kpi-sub">vs. $386 periodo anterior</div>
+      <div class="sparkline">
+        <svg viewBox="0 0 120 50"><polyline points="0,15 15,18 30,16 45,22 60,20 75,25 90,28 105,30 120,32" fill="none" stroke="#f87171" stroke-width="2"/></svg>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">NPS Score</div>
+      <div class="kpi-value">72 <span class="kpi-change up">↑ 5</span></div>
+      <div class="kpi-sub">Excelente — meta: 70+</div>
+      <div class="sparkline">
+        <svg viewBox="0 0 120 50"><polyline points="0,35 15,32 30,30 45,28 60,32 75,26 90,20 105,16 120,14" fill="none" stroke="#a78bfa" stroke-width="2"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Revenue Chart -->
+  <div class="chart-area">
+    <div class="chart-header">
+      <h3>Tendencia de ingresos</h3>
+      <div class="chart-tabs">
+        <button class="chart-tab">7D</button>
+        <button class="chart-tab active">15D</button>
+        <button class="chart-tab">1M</button>
+        <button class="chart-tab">3M</button>
+        <button class="chart-tab">1A</button>
+      </div>
+    </div>
+    <div class="revenue-chart">
+      <div class="chart-y-labels">
+        <span>$150K</span>
+        <span>$120K</span>
+        <span>$90K</span>
+        <span>$60K</span>
+        <span>$30K</span>
+      </div>
+      <div class="grid-lines">
+        <div class="grid-line" style="border-bottom-color:#ffffff08"></div>
+        <div class="grid-line" style="border-bottom-color:#ffffff08"></div>
+        <div class="grid-line" style="border-bottom-color:#ffffff08"></div>
+        <div class="grid-line" style="border-bottom-color:#ffffff08"></div>
+        <div class="grid-line"></div>
+      </div>
+      <div class="chart-gradient"></div>
+      <div class="chart-line"></div>
+    </div>
+    <div class="chart-x-labels">
+      <span>1 Abr</span><span>3 Abr</span><span>5 Abr</span><span>7 Abr</span><span>9 Abr</span><span>11 Abr</span><span>13 Abr</span><span>15 Abr</span>
+    </div>
+  </div>
+
+  <!-- Bottom Row -->
+  <div class="bottom-row">
+    <!-- Donut Chart -->
+    <div class="bottom-card">
+      <h3>Ventas por canal</h3>
+      <div class="donut-container">
+        <div class="donut" style="position:relative">
+          <div class="donut-center">
+            <span class="total">$128K</span>
+            <span class="label">Total</span>
+          </div>
+        </div>
+        <div class="donut-legend">
+          <div class="legend-row"><div class="legend-color" style="background:#22d3ee"></div>Sitio web<span class="legend-val">35%</span></div>
+          <div class="legend-row"><div class="legend-color" style="background:#06b6d4"></div>App móvil<span class="legend-val">24%</span></div>
+          <div class="legend-row"><div class="legend-color" style="background:#0891b2"></div>Redes sociales<span class="legend-val">16%</span></div>
+          <div class="legend-row"><div class="legend-color" style="background:#155e75"></div>Referidos<span class="legend-val">15%</span></div>
+          <div class="legend-row"><div class="legend-color" style="background:#334155"></div>Otros<span class="legend-val">10%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Products Table -->
+    <div class="bottom-card">
+      <h3>Top 5 productos</h3>
+      <table>
+        <thead>
+          <tr><th>#</th><th>Producto</th><th>Ingresos</th><th>Var.</th><th>Tendencia</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="rank">1</span></td>
+            <td class="product-name">Plan Enterprise</td>
+            <td class="product-revenue">$42,800</td>
+            <td class="change-cell up">+18%</td>
+            <td><div class="product-bar-bg"><div class="product-bar" style="width:100%"></div></div></td>
+          </tr>
+          <tr>
+            <td><span class="rank">2</span></td>
+            <td class="product-name">Plan Profesional</td>
+            <td class="product-revenue">$31,200</td>
+            <td class="change-cell up">+9%</td>
+            <td><div class="product-bar-bg"><div class="product-bar" style="width:73%"></div></div></td>
+          </tr>
+          <tr>
+            <td><span class="rank">3</span></td>
+            <td class="product-name">Consultoría Premium</td>
+            <td class="product-revenue">$24,600</td>
+            <td class="change-cell up">+22%</td>
+            <td><div class="product-bar-bg"><div class="product-bar" style="width:57%"></div></div></td>
+          </tr>
+          <tr>
+            <td><span class="rank">4</span></td>
+            <td class="product-name">Plan Starter</td>
+            <td class="product-revenue">$18,400</td>
+            <td class="change-cell down">-4%</td>
+            <td><div class="product-bar-bg"><div class="product-bar" style="width:43%"></div></div></td>
+          </tr>
+          <tr>
+            <td><span class="rank">5</span></td>
+            <td class="product-name">Add-ons y extras</td>
+            <td class="product-revenue">$11,000</td>
+            <td class="change-cell up">+6%</td>
+            <td><div class="product-bar-bg"><div class="product-bar" style="width:26%"></div></div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</body>
+</html>

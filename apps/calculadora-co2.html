@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Emisiones CO2 de tu Auto | LATAM Code Factory</title>
+<meta name="description" content="Calcula las emisiones de CO2 de tu vehiculo segun marca, modelo y kilometraje. Datos basados en fuentes oficiales EPA, EEA e INECC.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:#050816;color:#e2e8f0;min-height:100vh;overflow-x:hidden}
+
+.top-bar{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;background:rgba(5,8,22,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.06)}
+.top-bar a{color:#a78bfa;text-decoration:none;font-size:.85rem;font-weight:600;display:inline-flex;align-items:center;gap:8px;transition:color .2s}
+.top-bar a:hover{color:#c4b5fd}
+.top-bar .brand{color:#fff;font-weight:800;font-size:1rem}
+
+.hero{padding:120px 24px 40px;text-align:center;max-width:700px;margin:0 auto}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);color:#34d399;padding:6px 16px;border-radius:100px;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:20px}
+.hero h1{font-size:2.2rem;font-weight:900;line-height:1.2;margin-bottom:12px;background:linear-gradient(135deg,#fff,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{color:#94a3b8;font-size:1rem;line-height:1.7;max-width:520px;margin:0 auto}
+
+.calc-container{max-width:720px;margin:0 auto;padding:0 24px 40px}
+.calc-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:24px;overflow:hidden}
+
+.form-section{padding:28px}
+.form-section h3{font-size:.95rem;font-weight:700;color:#e2e8f0;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.form-section h3 i{color:#34d399}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-group.full{grid-column:1/-1}
+.form-group label{font-size:.72rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.4px}
+.form-group select,.form-group input{padding:13px 16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;color:#fff;font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:500;transition:border-color .2s;appearance:none;-webkit-appearance:none}
+.form-group select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;cursor:pointer}
+.form-group select option{background:#1e1b4b;color:#fff}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:#34d399;background:rgba(16,185,129,.08)}
+.form-group input::placeholder{color:#334155}
+.form-group .hint{font-size:.68rem;color:#475569;margin-top:2px}
+
+.divider{height:1px;background:rgba(255,255,255,.06);margin:0 28px}
+
+/* Vehicle info badge */
+.vehicle-info{margin:0 28px;padding:16px 20px;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.12);border-radius:12px;display:none;gap:16px;align-items:center;margin-bottom:20px}
+.vehicle-info.show{display:flex}
+.vehicle-info .vi-icon{width:48px;height:48px;border-radius:12px;background:rgba(16,185,129,.15);display:grid;place-items:center;font-size:1.2rem;flex-shrink:0}
+.vehicle-info .vi-text{flex:1}
+.vehicle-info .vi-text strong{display:block;font-size:.85rem;color:#34d399;margin-bottom:2px}
+.vehicle-info .vi-text span{font-size:.75rem;color:#94a3b8}
+
+/* Result */
+.result-section{padding:20px 28px 28px}
+.result-card{background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(5,150,105,.1));border:1px solid rgba(16,185,129,.2);border-radius:16px;padding:28px;text-align:center;position:relative;overflow:hidden}
+.result-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(16,185,129,.15),transparent 70%);pointer-events:none}
+.result-label{font-size:.8rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.result-amount{font-size:2.6rem;font-weight:900;background:linear-gradient(135deg,#34d399,#10b981,#059669);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2;margin-bottom:2px}
+.result-unit{font-size:.85rem;color:#64748b;margin-bottom:16px}
+.result-details{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding-top:16px;border-top:1px solid rgba(255,255,255,.06)}
+.result-detail{text-align:center}
+.result-detail span{display:block;font-size:.68rem;color:#64748b;margin-bottom:4px}
+.result-detail strong{font-size:.95rem;color:#e2e8f0;font-weight:700}
+
+/* Equivalences */
+.equiv-section{padding:0 28px 28px}
+.equiv-title{font-size:.82rem;font-weight:700;color:#e2e8f0;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.equiv-title i{color:#f59e0b}
+.equiv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.equiv-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px;text-align:center}
+.equiv-card .eq-icon{font-size:1.5rem;margin-bottom:8px}
+.equiv-card .eq-val{display:block;font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:2px}
+.equiv-card .eq-label{font-size:.68rem;color:#64748b;line-height:1.4}
+
+/* Comparison bar */
+.compare-section{padding:0 28px 28px}
+.compare-title{font-size:.82rem;font-weight:700;color:#e2e8f0;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.compare-title i{color:#667eea}
+.compare-bars{display:flex;flex-direction:column;gap:10px}
+.compare-bar{display:flex;align-items:center;gap:12px}
+.compare-bar .cb-label{font-size:.72rem;color:#94a3b8;width:90px;flex-shrink:0;text-align:right}
+.compare-bar .cb-track{flex:1;height:24px;background:rgba(255,255,255,.04);border-radius:6px;overflow:hidden;position:relative}
+.compare-bar .cb-fill{height:100%;border-radius:6px;transition:width .6s ease;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-size:.65rem;font-weight:700;color:#fff;min-width:fit-content}
+.compare-bar.yours .cb-fill{background:linear-gradient(90deg,#34d399,#059669)}
+.compare-bar.avg .cb-fill{background:linear-gradient(90deg,#f59e0b,#d97706)}
+.compare-bar.suv .cb-fill{background:linear-gradient(90deg,#ef4444,#dc2626)}
+.compare-bar.electric .cb-fill{background:linear-gradient(90deg,#3b82f6,#2563eb)}
+
+/* Tips */
+.tips-section{padding:0 28px 28px}
+.tips-title{font-size:.82rem;font-weight:700;color:#e2e8f0;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.tips-title i{color:#34d399}
+.tips-list{display:flex;flex-direction:column;gap:8px}
+.tip{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;background:rgba(16,185,129,.04);border:1px solid rgba(16,185,129,.08);border-radius:10px}
+.tip i{color:#34d399;margin-top:2px;flex-shrink:0;font-size:.8rem}
+.tip p{font-size:.8rem;color:#94a3b8;line-height:1.5}
+.tip strong{color:#e2e8f0}
+
+/* Sources */
+.sources-section{max-width:720px;margin:0 auto;padding:0 24px 40px}
+.sources-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:20px;padding:28px}
+.sources-card h3{font-size:.9rem;font-weight:700;color:#e2e8f0;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.sources-card h3 i{color:#667eea}
+.source-item{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.04)}
+.source-item:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+.source-item .src-name{font-size:.8rem;font-weight:700;color:#a78bfa;margin-bottom:4px}
+.source-item .src-desc{font-size:.75rem;color:#64748b;line-height:1.6}
+.source-item a{color:#667eea;text-decoration:none}
+.source-item a:hover{text-decoration:underline}
+.calc-method{margin-top:20px;padding:16px;background:rgba(102,126,234,.06);border:1px solid rgba(102,126,234,.1);border-radius:12px}
+.calc-method h4{font-size:.8rem;font-weight:700;color:#c4b5fd;margin-bottom:8px}
+.calc-method p{font-size:.75rem;color:#94a3b8;line-height:1.7}
+.calc-method code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:#34d399}
+
+.mini-footer{text-align:center;padding:24px;border-top:1px solid rgba(255,255,255,.04)}
+.mini-footer p{font-size:.75rem;color:#475569}
+.mini-footer a{color:#667eea;text-decoration:none}
+
+@media(max-width:640px){
+  .hero h1{font-size:1.6rem}
+  .form-grid{grid-template-columns:1fr}
+  .result-amount{font-size:2rem}
+  .result-details{grid-template-columns:1fr}
+  .equiv-grid{grid-template-columns:1fr}
+  .compare-bar .cb-label{width:70px;font-size:.65rem}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="../index.html#apps"><i class="fas fa-arrow-left"></i> Volver</a>
+  <span class="brand"><i class="fas fa-industry"></i> LATAM Code Factory</span>
+</div>
+
+<section class="hero">
+  <div class="hero-badge"><i class="fas fa-leaf"></i> Herramienta gratuita</div>
+  <h1>Emisiones CO2 de tu Auto</h1>
+  <p>Calcula cuanto CO2 genera tu vehiculo al ano segun su marca, modelo, tipo de combustible y kilometraje. Datos basados en fuentes oficiales.</p>
+</section>
+
+<div class="calc-container">
+  <div class="calc-card">
+
+    <div class="form-section">
+      <h3><i class="fas fa-car"></i> Datos de tu vehiculo</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Marca</label>
+          <select id="marca">
+            <option value="">Selecciona marca</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Modelo</label>
+          <select id="modelo" disabled>
+            <option value="">Primero selecciona marca</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Ano del vehiculo</label>
+          <select id="anio"></select>
+        </div>
+        <div class="form-group">
+          <label>Tipo de combustible</label>
+          <select id="combustible">
+            <option value="gasolina">Gasolina</option>
+            <option value="diesel">Diesel</option>
+            <option value="hibrido">Hibrido</option>
+            <option value="electrico">Electrico</option>
+            <option value="gas">Gas LP / GNV</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="form-section">
+      <h3><i class="fas fa-road"></i> Uso del vehiculo</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Kilometros por semana</label>
+          <input type="text" id="kmSemana" placeholder="Ej: 250" inputmode="numeric">
+          <span class="hint">Promedio LATAM: 200-350 km/semana</span>
+        </div>
+        <div class="form-group">
+          <label>Rendimiento (km/litro)</label>
+          <input type="text" id="rendimiento" placeholder="Auto" inputmode="decimal">
+          <span class="hint">Se estima segun el modelo seleccionado</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="vehicle-info" id="vehicleInfo">
+      <div class="vi-icon"><i class="fas fa-info-circle"></i></div>
+      <div class="vi-text">
+        <strong id="viTitle">—</strong>
+        <span id="viDesc">—</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="result-section">
+      <div class="result-card">
+        <div class="result-label">Emisiones anuales estimadas</div>
+        <div class="result-amount" id="resultCO2">0</div>
+        <div class="result-unit">kg de CO2 por ano</div>
+        <div class="result-details">
+          <div class="result-detail">
+            <span>CO2 por km</span>
+            <strong id="detailGkm">0 g</strong>
+          </div>
+          <div class="result-detail">
+            <span>Km al ano</span>
+            <strong id="detailKmYear">0</strong>
+          </div>
+          <div class="result-detail">
+            <span>Litros al ano</span>
+            <strong id="detailLitros">0</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="equiv-section">
+      <div class="equiv-title"><i class="fas fa-globe-americas"></i> Equivalencias ambientales</div>
+      <div class="equiv-grid">
+        <div class="equiv-card">
+          <div class="eq-icon">🌳</div>
+          <span class="eq-val" id="eqArboles">0</span>
+          <span class="eq-label">arboles necesarios para absorber ese CO2 al ano</span>
+        </div>
+        <div class="equiv-card">
+          <div class="eq-icon">🛫</div>
+          <span class="eq-val" id="eqVuelos">0</span>
+          <span class="eq-label">vuelos San Jose - Ciudad de Mexico equivalentes</span>
+        </div>
+        <div class="equiv-card">
+          <div class="eq-icon">💡</div>
+          <span class="eq-val" id="eqFocos">0</span>
+          <span class="eq-label">dias con un foco LED encendido 24h equivalentes</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="compare-section">
+      <div class="compare-title"><i class="fas fa-chart-bar"></i> Comparacion con otros vehiculos</div>
+      <div class="compare-bars">
+        <div class="compare-bar electric">
+          <span class="cb-label">Electrico</span>
+          <div class="cb-track"><div class="cb-fill" id="barElectric" style="width:5%">0 g/km</div></div>
+        </div>
+        <div class="compare-bar yours">
+          <span class="cb-label">Tu auto</span>
+          <div class="cb-track"><div class="cb-fill" id="barYours" style="width:50%">— g/km</div></div>
+        </div>
+        <div class="compare-bar avg">
+          <span class="cb-label">Promedio</span>
+          <div class="cb-track"><div class="cb-fill" id="barAvg" style="width:60%">170 g/km</div></div>
+        </div>
+        <div class="compare-bar suv">
+          <span class="cb-label">SUV grande</span>
+          <div class="cb-track"><div class="cb-fill" id="barSuv" style="width:90%">265 g/km</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tips-section">
+      <div class="tips-title"><i class="fas fa-lightbulb"></i> Tips para reducir emisiones</div>
+      <div class="tips-list" id="tipsList">
+        <div class="tip"><i class="fas fa-check"></i><p><strong>Mantenimiento al dia:</strong> Un motor bien afinado consume hasta 10% menos combustible.</p></div>
+        <div class="tip"><i class="fas fa-check"></i><p><strong>Presion de llantas:</strong> Llantas con baja presion aumentan el consumo un 3-5%.</p></div>
+        <div class="tip"><i class="fas fa-check"></i><p><strong>Conduccion eficiente:</strong> Evita acelerones y frenazos bruscos. Usa el freno motor en bajadas.</p></div>
+        <div class="tip"><i class="fas fa-check"></i><p><strong>Comparte viajes:</strong> Llevar un pasajero reduce las emisiones per capita a la mitad.</p></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="sources-section">
+  <div class="sources-card">
+    <h3><i class="fas fa-book"></i> Fuentes y metodologia</h3>
+
+    <div class="source-item">
+      <div class="src-name">EPA - Greenhouse Gas Emissions from a Typical Passenger Vehicle</div>
+      <div class="src-desc">Factor de emision: <strong>2,310 g CO2 por litro de gasolina</strong> y <strong>2,680 g CO2 por litro de diesel</strong>. Fuente oficial de la Agencia de Proteccion Ambiental de EE.UU. <a href="https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle" target="_blank">epa.gov/greenvehicles</a></div>
+    </div>
+
+    <div class="source-item">
+      <div class="src-name">EEA - European Environment Agency</div>
+      <div class="src-desc">Datos de emisiones promedio de vehiculos nuevos en la UE: 122 g CO2/km (2023). Los valores por categoria (compacto, sedan, SUV) se basan en reportes WLTP de la EEA. <a href="https://www.eea.europa.eu/en/topics/in-depth/transport-and-mobility" target="_blank">eea.europa.eu</a></div>
+    </div>
+
+    <div class="source-item">
+      <div class="src-name">INECC - Instituto Nacional de Ecologia y Cambio Climatico (Mexico)</div>
+      <div class="src-desc">Factores de emision para vehiculos en America Latina. Promedio de flota vehicular en Mexico: ~170 g CO2/km. <a href="https://www.gob.mx/inecc" target="_blank">gob.mx/inecc</a></div>
+    </div>
+
+    <div class="source-item">
+      <div class="src-name">IPCC - Panel Intergubernamental de Cambio Climatico</div>
+      <div class="src-desc">Un arbol maduro absorbe aproximadamente <strong>22 kg de CO2 al ano</strong>. Referencia para calculo de equivalencias forestales. <a href="https://www.ipcc.ch" target="_blank">ipcc.ch</a></div>
+    </div>
+
+    <div class="source-item">
+      <div class="src-name">Rendimientos de combustible</div>
+      <div class="src-desc">Datos de rendimiento (km/litro) basados en promedios reportados por fabricantes bajo ciclo combinado WLTP y ajustados +15% para condiciones reales de manejo en LATAM (trafico, altitud, clima).</div>
+    </div>
+
+    <div class="calc-method">
+      <h4>Metodo de calculo</h4>
+      <p>
+        <strong>1.</strong> Se determina el <code>rendimiento (km/L)</code> segun marca, modelo y tipo de vehiculo.<br>
+        <strong>2.</strong> <code>Litros/ano = (km/semana x 52) / rendimiento</code><br>
+        <strong>3.</strong> <code>CO2/ano = Litros/ano x factor de emision del combustible</code><br>
+        <strong>4.</strong> Factores: Gasolina = <code>2,310 g/L</code> | Diesel = <code>2,680 g/L</code> | Gas LP = <code>1,610 g/L</code><br>
+        <strong>5.</strong> Hibridos: se aplica reduccion del 35-40% sobre gasolina equivalente.<br>
+        <strong>6.</strong> Electricos: 0 g CO2 directo (emision del tubo de escape). Las emisiones indirectas dependen de la matriz energetica de cada pais.
+      </p>
+    </div>
+  </div>
+</div>
+
+<footer class="mini-footer">
+  <p>Hecho con <i class="fas fa-heart" style="color:#f5576c"></i> por <a href="../index.html">LATAM Code Factory</a></p>
+</footer>
+
+<script>
+// ============================================================
+// DATABASE: Brands → Models → { category, kmL by fuel }
+// Rendimientos basados en datos de fabricantes (ciclo combinado WLTP)
+// ajustados +15% para condiciones reales LATAM
+// Categories: compacto, sedan, suv, pickup, van
+// ============================================================
+const DB = {
+  'Toyota': {
+    'Yaris': { cat: 'compacto', kmL: { gasolina: 15.5, hibrido: 21 } },
+    'Corolla': { cat: 'sedan', kmL: { gasolina: 14, hibrido: 20 } },
+    'Camry': { cat: 'sedan', kmL: { gasolina: 12.5, hibrido: 18 } },
+    'RAV4': { cat: 'suv', kmL: { gasolina: 11.5, diesel: 13, hibrido: 17 } },
+    'Hilux': { cat: 'pickup', kmL: { gasolina: 9, diesel: 11 } },
+    'Land Cruiser': { cat: 'suv', kmL: { gasolina: 7.5, diesel: 9.5 } },
+    'Fortuner': { cat: 'suv', kmL: { gasolina: 9, diesel: 11 } },
+    'Avanza': { cat: 'van', kmL: { gasolina: 12 } },
+    'C-HR': { cat: 'suv', kmL: { gasolina: 13, hibrido: 19 } },
+    'Prius': { cat: 'sedan', kmL: { hibrido: 23 } },
+    'Tacoma': { cat: 'pickup', kmL: { gasolina: 9.5 } },
+    'Corolla Cross': { cat: 'suv', kmL: { gasolina: 12.5, hibrido: 18.5 } },
+  },
+  'Nissan': {
+    'March': { cat: 'compacto', kmL: { gasolina: 16 } },
+    'Versa': { cat: 'sedan', kmL: { gasolina: 14.5 } },
+    'Sentra': { cat: 'sedan', kmL: { gasolina: 13 } },
+    'Altima': { cat: 'sedan', kmL: { gasolina: 12 } },
+    'Kicks': { cat: 'suv', kmL: { gasolina: 13 } },
+    'X-Trail': { cat: 'suv', kmL: { gasolina: 11 } },
+    'Frontier': { cat: 'pickup', kmL: { gasolina: 8.5, diesel: 10.5 } },
+    'NP300': { cat: 'pickup', kmL: { gasolina: 8, diesel: 10 } },
+    'Pathfinder': { cat: 'suv', kmL: { gasolina: 9 } },
+    'Leaf': { cat: 'compacto', kmL: { electrico: 99 } },
+  },
+  'Chevrolet': {
+    'Spark': { cat: 'compacto', kmL: { gasolina: 16.5 } },
+    'Onix': { cat: 'compacto', kmL: { gasolina: 15 } },
+    'Aveo': { cat: 'sedan', kmL: { gasolina: 14 } },
+    'Cavalier': { cat: 'sedan', kmL: { gasolina: 13 } },
+    'Tracker': { cat: 'suv', kmL: { gasolina: 12.5 } },
+    'Equinox': { cat: 'suv', kmL: { gasolina: 10.5 } },
+    'Tahoe': { cat: 'suv', kmL: { gasolina: 7 } },
+    'Silverado': { cat: 'pickup', kmL: { gasolina: 7.5, diesel: 9.5 } },
+    'Colorado': { cat: 'pickup', kmL: { gasolina: 8.5, diesel: 10.5 } },
+    'Trax': { cat: 'suv', kmL: { gasolina: 13 } },
+    'Captiva': { cat: 'suv', kmL: { gasolina: 11 } },
+    'Bolt EV': { cat: 'compacto', kmL: { electrico: 99 } },
+  },
+  'Volkswagen': {
+    'Polo': { cat: 'compacto', kmL: { gasolina: 15 } },
+    'Gol': { cat: 'compacto', kmL: { gasolina: 14 } },
+    'Jetta': { cat: 'sedan', kmL: { gasolina: 13.5 } },
+    'Virtus': { cat: 'sedan', kmL: { gasolina: 14 } },
+    'Taos': { cat: 'suv', kmL: { gasolina: 12 } },
+    'Tiguan': { cat: 'suv', kmL: { gasolina: 11, diesel: 14 } },
+    'T-Cross': { cat: 'suv', kmL: { gasolina: 13.5 } },
+    'Amarok': { cat: 'pickup', kmL: { diesel: 10.5 } },
+    'ID.4': { cat: 'suv', kmL: { electrico: 99 } },
+    'Nivus': { cat: 'suv', kmL: { gasolina: 13 } },
+  },
+  'Honda': {
+    'Fit': { cat: 'compacto', kmL: { gasolina: 16, hibrido: 22 } },
+    'City': { cat: 'sedan', kmL: { gasolina: 14.5 } },
+    'Civic': { cat: 'sedan', kmL: { gasolina: 13 } },
+    'Accord': { cat: 'sedan', kmL: { gasolina: 12, hibrido: 17.5 } },
+    'HR-V': { cat: 'suv', kmL: { gasolina: 12.5, hibrido: 17 } },
+    'CR-V': { cat: 'suv', kmL: { gasolina: 11, hibrido: 16 } },
+    'Pilot': { cat: 'suv', kmL: { gasolina: 8.5 } },
+    'BR-V': { cat: 'suv', kmL: { gasolina: 13 } },
+  },
+  'Hyundai': {
+    'Grand i10': { cat: 'compacto', kmL: { gasolina: 17 } },
+    'Accent': { cat: 'sedan', kmL: { gasolina: 14.5 } },
+    'Elantra': { cat: 'sedan', kmL: { gasolina: 13.5 } },
+    'Sonata': { cat: 'sedan', kmL: { gasolina: 12, hibrido: 17 } },
+    'Venue': { cat: 'suv', kmL: { gasolina: 14 } },
+    'Creta': { cat: 'suv', kmL: { gasolina: 12.5 } },
+    'Tucson': { cat: 'suv', kmL: { gasolina: 11, hibrido: 16 } },
+    'Santa Fe': { cat: 'suv', kmL: { gasolina: 9.5, diesel: 12, hibrido: 14.5 } },
+    'Palisade': { cat: 'suv', kmL: { gasolina: 8.5 } },
+    'Ioniq 5': { cat: 'suv', kmL: { electrico: 99 } },
+    'Kona EV': { cat: 'suv', kmL: { electrico: 99 } },
+  },
+  'Kia': {
+    'Picanto': { cat: 'compacto', kmL: { gasolina: 17 } },
+    'Rio': { cat: 'compacto', kmL: { gasolina: 15 } },
+    'Forte': { cat: 'sedan', kmL: { gasolina: 13.5 } },
+    'K5': { cat: 'sedan', kmL: { gasolina: 12 } },
+    'Seltos': { cat: 'suv', kmL: { gasolina: 12.5 } },
+    'Sportage': { cat: 'suv', kmL: { gasolina: 11, hibrido: 16 } },
+    'Sorento': { cat: 'suv', kmL: { gasolina: 9.5, diesel: 12, hibrido: 14 } },
+    'Carnival': { cat: 'van', kmL: { gasolina: 8.5 } },
+    'EV6': { cat: 'suv', kmL: { electrico: 99 } },
+    'Niro EV': { cat: 'suv', kmL: { electrico: 99 } },
+    'Soul': { cat: 'compacto', kmL: { gasolina: 13.5 } },
+  },
+  'Ford': {
+    'Figo': { cat: 'compacto', kmL: { gasolina: 15 } },
+    'Maverick': { cat: 'pickup', kmL: { gasolina: 10, hibrido: 15 } },
+    'Escape': { cat: 'suv', kmL: { gasolina: 11, hibrido: 16 } },
+    'Bronco Sport': { cat: 'suv', kmL: { gasolina: 11 } },
+    'Explorer': { cat: 'suv', kmL: { gasolina: 8.5 } },
+    'Ranger': { cat: 'pickup', kmL: { gasolina: 8.5, diesel: 10.5 } },
+    'F-150': { cat: 'pickup', kmL: { gasolina: 7.5 } },
+    'Territory': { cat: 'suv', kmL: { gasolina: 11.5 } },
+    'Mustang Mach-E': { cat: 'suv', kmL: { electrico: 99 } },
+  },
+  'Mazda': {
+    'Mazda2': { cat: 'compacto', kmL: { gasolina: 16 } },
+    'Mazda3': { cat: 'sedan', kmL: { gasolina: 14 } },
+    'Mazda6': { cat: 'sedan', kmL: { gasolina: 12 } },
+    'CX-3': { cat: 'suv', kmL: { gasolina: 13.5 } },
+    'CX-30': { cat: 'suv', kmL: { gasolina: 13 } },
+    'CX-5': { cat: 'suv', kmL: { gasolina: 11, diesel: 13.5 } },
+    'CX-50': { cat: 'suv', kmL: { gasolina: 10.5 } },
+    'CX-9': { cat: 'suv', kmL: { gasolina: 9 } },
+    'MX-5': { cat: 'compacto', kmL: { gasolina: 13 } },
+  },
+  'Suzuki': {
+    'Swift': { cat: 'compacto', kmL: { gasolina: 17, hibrido: 20 } },
+    'Baleno': { cat: 'compacto', kmL: { gasolina: 16 } },
+    'Ciaz': { cat: 'sedan', kmL: { gasolina: 15.5 } },
+    'Ignis': { cat: 'compacto', kmL: { gasolina: 17 } },
+    'Vitara': { cat: 'suv', kmL: { gasolina: 12.5, hibrido: 16 } },
+    'S-Cross': { cat: 'suv', kmL: { gasolina: 12 } },
+    'Jimny': { cat: 'suv', kmL: { gasolina: 11 } },
+    'Ertiga': { cat: 'van', kmL: { gasolina: 14 } },
+    'Fronx': { cat: 'suv', kmL: { gasolina: 14.5 } },
+  },
+  'Renault': {
+    'Kwid': { cat: 'compacto', kmL: { gasolina: 17.5 } },
+    'Logan': { cat: 'sedan', kmL: { gasolina: 14 } },
+    'Stepway': { cat: 'compacto', kmL: { gasolina: 14 } },
+    'Duster': { cat: 'suv', kmL: { gasolina: 11.5 } },
+    'Koleos': { cat: 'suv', kmL: { gasolina: 10 } },
+    'Captur': { cat: 'suv', kmL: { gasolina: 13 } },
+    'Oroch': { cat: 'pickup', kmL: { gasolina: 10.5 } },
+  },
+  'Mitsubishi': {
+    'Mirage': { cat: 'compacto', kmL: { gasolina: 18 } },
+    'Lancer': { cat: 'sedan', kmL: { gasolina: 12.5 } },
+    'ASX': { cat: 'suv', kmL: { gasolina: 12 } },
+    'Outlander': { cat: 'suv', kmL: { gasolina: 10, hibrido: 15 } },
+    'Eclipse Cross': { cat: 'suv', kmL: { gasolina: 11 } },
+    'L200': { cat: 'pickup', kmL: { diesel: 10 } },
+    'Montero Sport': { cat: 'suv', kmL: { diesel: 10.5 } },
+  },
+  'Subaru': {
+    'Impreza': { cat: 'sedan', kmL: { gasolina: 12.5 } },
+    'Crosstrek': { cat: 'suv', kmL: { gasolina: 11.5 } },
+    'Forester': { cat: 'suv', kmL: { gasolina: 10.5 } },
+    'Outback': { cat: 'suv', kmL: { gasolina: 10 } },
+    'WRX': { cat: 'sedan', kmL: { gasolina: 10 } },
+  },
+  'RAM': {
+    '700': { cat: 'pickup', kmL: { gasolina: 12 } },
+    '1200': { cat: 'pickup', kmL: { gasolina: 10 } },
+    '1500': { cat: 'pickup', kmL: { gasolina: 7 } },
+    '2500': { cat: 'pickup', kmL: { diesel: 7.5 } },
+  },
+  'Jeep': {
+    'Renegade': { cat: 'suv', kmL: { gasolina: 11.5 } },
+    'Compass': { cat: 'suv', kmL: { gasolina: 11 } },
+    'Cherokee': { cat: 'suv', kmL: { gasolina: 9.5 } },
+    'Grand Cherokee': { cat: 'suv', kmL: { gasolina: 8.5 } },
+    'Wrangler': { cat: 'suv', kmL: { gasolina: 8 } },
+    'Gladiator': { cat: 'pickup', kmL: { gasolina: 7.5 } },
+  },
+  'Peugeot': {
+    '208': { cat: 'compacto', kmL: { gasolina: 15 } },
+    '301': { cat: 'sedan', kmL: { gasolina: 14 } },
+    '2008': { cat: 'suv', kmL: { gasolina: 13.5 } },
+    '3008': { cat: 'suv', kmL: { gasolina: 11 } },
+    '5008': { cat: 'suv', kmL: { gasolina: 10 } },
+    'Partner': { cat: 'van', kmL: { gasolina: 11, diesel: 14 } },
+    'e-208': { cat: 'compacto', kmL: { electrico: 99 } },
+  },
+  'SEAT / CUPRA': {
+    'Ibiza': { cat: 'compacto', kmL: { gasolina: 15 } },
+    'Arona': { cat: 'suv', kmL: { gasolina: 14 } },
+    'Ateca': { cat: 'suv', kmL: { gasolina: 12 } },
+    'Tarraco': { cat: 'suv', kmL: { gasolina: 10.5 } },
+    'Leon': { cat: 'sedan', kmL: { gasolina: 14 } },
+    'Formentor': { cat: 'suv', kmL: { gasolina: 11.5 } },
+    'Born': { cat: 'compacto', kmL: { electrico: 99 } },
+  },
+  'MG': {
+    'MG3': { cat: 'compacto', kmL: { gasolina: 15 } },
+    'MG5': { cat: 'sedan', kmL: { gasolina: 13.5 } },
+    'ZS': { cat: 'suv', kmL: { gasolina: 12.5 } },
+    'HS': { cat: 'suv', kmL: { gasolina: 11 } },
+    'ZS EV': { cat: 'suv', kmL: { electrico: 99 } },
+    'Marvel R': { cat: 'suv', kmL: { electrico: 99 } },
+  },
+  'BYD': {
+    'Dolphin': { cat: 'compacto', kmL: { electrico: 99 } },
+    'Atto 3': { cat: 'suv', kmL: { electrico: 99 } },
+    'Han': { cat: 'sedan', kmL: { electrico: 99 } },
+    'Tang': { cat: 'suv', kmL: { electrico: 99 } },
+    'Seal': { cat: 'sedan', kmL: { electrico: 99 } },
+    'Song Plus': { cat: 'suv', kmL: { hibrido: 19 } },
+  },
+  'Chery': {
+    'QQ': { cat: 'compacto', kmL: { gasolina: 17 } },
+    'Tiggo 2': { cat: 'suv', kmL: { gasolina: 13 } },
+    'Tiggo 4': { cat: 'suv', kmL: { gasolina: 12 } },
+    'Tiggo 7': { cat: 'suv', kmL: { gasolina: 11 } },
+    'Tiggo 8': { cat: 'suv', kmL: { gasolina: 10 } },
+    'Arrizo 5': { cat: 'sedan', kmL: { gasolina: 14 } },
+  },
+  'JAC': {
+    'Sei 3': { cat: 'sedan', kmL: { gasolina: 14 } },
+    'Sei 4': { cat: 'suv', kmL: { gasolina: 12 } },
+    'Sei 7': { cat: 'suv', kmL: { gasolina: 10 } },
+    'E10X': { cat: 'compacto', kmL: { electrico: 99 } },
+    'iEV40': { cat: 'sedan', kmL: { electrico: 99 } },
+    'T6': { cat: 'pickup', kmL: { diesel: 10 } },
+  },
+  'Fiat': {
+    'Mobi': { cat: 'compacto', kmL: { gasolina: 16 } },
+    'Argo': { cat: 'compacto', kmL: { gasolina: 14 } },
+    'Cronos': { cat: 'sedan', kmL: { gasolina: 14 } },
+    'Pulse': { cat: 'suv', kmL: { gasolina: 13 } },
+    'Fastback': { cat: 'suv', kmL: { gasolina: 12 } },
+    'Strada': { cat: 'pickup', kmL: { gasolina: 11 } },
+    'Toro': { cat: 'pickup', kmL: { diesel: 11.5 } },
+    'Ducato': { cat: 'van', kmL: { diesel: 9 } },
+  },
+  'Otro': {
+    'Compacto / Hatchback': { cat: 'compacto', kmL: { gasolina: 15, diesel: 17, hibrido: 20, gas: 13, electrico: 99 } },
+    'Sedan': { cat: 'sedan', kmL: { gasolina: 13, diesel: 15, hibrido: 18, gas: 11, electrico: 99 } },
+    'SUV compacta': { cat: 'suv', kmL: { gasolina: 12, diesel: 14, hibrido: 16, gas: 10, electrico: 99 } },
+    'SUV grande': { cat: 'suv', kmL: { gasolina: 8.5, diesel: 10, hibrido: 13, gas: 7, electrico: 99 } },
+    'Pickup': { cat: 'pickup', kmL: { gasolina: 8, diesel: 10, gas: 7, electrico: 99 } },
+    'Van / Minivan': { cat: 'van', kmL: { gasolina: 10, diesel: 12, gas: 8.5, electrico: 99 } },
+  }
+};
+
+// CO2 emission factors (grams per liter)
+const EMISSION_FACTORS = {
+  gasolina: 2310,
+  diesel: 2680,
+  gas: 1610,
+  hibrido: 2310, // uses gasoline engine
+  electrico: 0,
+};
+
+const CAT_ICONS = {
+  compacto: '🚗', sedan: '🚙', suv: '🚙', pickup: '🛻', van: '🚐'
+};
+
+const CAT_NAMES = {
+  compacto: 'Compacto', sedan: 'Sedan', suv: 'SUV', pickup: 'Pickup', van: 'Van/Minivan'
+};
+
+// Elements
+const marcaSelect = document.getElementById('marca');
+const modeloSelect = document.getElementById('modelo');
+const anioSelect = document.getElementById('anio');
+const combustibleSelect = document.getElementById('combustible');
+const kmInput = document.getElementById('kmSemana');
+const rendInput = document.getElementById('rendimiento');
+const vehicleInfo = document.getElementById('vehicleInfo');
+
+// Populate brands
+Object.keys(DB).sort().forEach(brand => {
+  const opt = document.createElement('option');
+  opt.value = brand;
+  opt.textContent = brand;
+  marcaSelect.appendChild(opt);
+});
+
+// Populate years
+for (let y = 2026; y >= 2000; y--) {
+  const opt = document.createElement('option');
+  opt.value = y;
+  opt.textContent = y;
+  if (y === 2024) opt.selected = true;
+  anioSelect.appendChild(opt);
+}
+
+// Brand change → populate models
+marcaSelect.addEventListener('change', () => {
+  const brand = marcaSelect.value;
+  modeloSelect.innerHTML = '<option value="">Selecciona modelo</option>';
+  if (brand && DB[brand]) {
+    modeloSelect.disabled = false;
+    Object.keys(DB[brand]).forEach(model => {
+      const opt = document.createElement('option');
+      opt.value = model;
+      opt.textContent = model;
+      modeloSelect.appendChild(opt);
+    });
+  } else {
+    modeloSelect.disabled = true;
+  }
+  updateFuelOptions();
+  calculate();
+});
+
+// Model change → update fuel options & rendimiento
+modeloSelect.addEventListener('change', () => {
+  updateFuelOptions();
+  updateRendimiento();
+  calculate();
+});
+
+combustibleSelect.addEventListener('change', () => {
+  updateRendimiento();
+  calculate();
+});
+
+function updateFuelOptions() {
+  const brand = marcaSelect.value;
+  const model = modeloSelect.value;
+  if (!brand || !model || !DB[brand]?.[model]) return;
+
+  const data = DB[brand][model];
+  const available = Object.keys(data.kmL);
+  const currentFuel = combustibleSelect.value;
+
+  // Update which options are available
+  Array.from(combustibleSelect.options).forEach(opt => {
+    if (opt.value) {
+      const isAvailable = available.includes(opt.value);
+      opt.disabled = !isAvailable;
+      opt.textContent = opt.value.charAt(0).toUpperCase() + opt.value.slice(1) + (isAvailable ? '' : ' (no disponible)');
+    }
+  });
+
+  // If current selection isn't available, switch to first available
+  if (!available.includes(currentFuel)) {
+    combustibleSelect.value = available[0];
+  }
+}
+
+function updateRendimiento() {
+  const brand = marcaSelect.value;
+  const model = modeloSelect.value;
+  const fuel = combustibleSelect.value;
+  if (!brand || !model || !DB[brand]?.[model]) return;
+
+  const data = DB[brand][model];
+  const kmL = data.kmL[fuel] || data.kmL[Object.keys(data.kmL)[0]];
+
+  if (fuel === 'electrico') {
+    rendInput.value = 'N/A';
+    rendInput.disabled = true;
+  } else {
+    rendInput.value = kmL;
+    rendInput.disabled = false;
+  }
+
+  // Show vehicle info
+  vehicleInfo.classList.add('show');
+  document.getElementById('viTitle').textContent = `${brand} ${model} — ${CAT_NAMES[data.cat]}`;
+  if (fuel === 'electrico') {
+    document.getElementById('viDesc').textContent = `Vehiculo electrico: 0 emisiones directas de CO2`;
+  } else {
+    document.getElementById('viDesc').textContent = `Rendimiento estimado: ${kmL} km/L (${fuel}) · Categoria: ${data.cat}`;
+  }
+}
+
+// Format km input
+kmInput.addEventListener('input', (e) => {
+  let val = e.target.value.replace(/[^\d]/g, '');
+  if (val) e.target.value = Number(val).toLocaleString('es-MX');
+  else e.target.value = '';
+  calculate();
+});
+kmInput.addEventListener('focus', e => e.target.select());
+rendInput.addEventListener('input', calculate);
+rendInput.addEventListener('change', calculate);
+anioSelect.addEventListener('change', calculate);
+
+function calculate() {
+  const kmWeekRaw = parseInt(kmInput.value?.replace(/[^\d]/g, '')) || 0;
+  const fuel = combustibleSelect.value;
+  const rend = parseFloat(rendInput.value) || 12;
+  const anio = parseInt(anioSelect.value);
+
+  const kmYear = kmWeekRaw * 52;
+
+  let co2Year, gPerKm, litrosYear;
+
+  if (fuel === 'electrico') {
+    co2Year = 0;
+    gPerKm = 0;
+    litrosYear = 0;
+  } else {
+    // Age adjustment: older cars emit ~1.5% more per year vs 2024
+    const ageFactor = 1 + Math.max(0, (2024 - anio)) * 0.015;
+    const adjustedRend = rend / ageFactor;
+
+    litrosYear = kmYear / adjustedRend;
+    co2Year = (litrosYear * EMISSION_FACTORS[fuel]) / 1000; // in kg
+    gPerKm = kmYear > 0 ? (co2Year * 1000) / kmYear : 0;
+  }
+
+  // Update results
+  document.getElementById('resultCO2').textContent = Math.round(co2Year).toLocaleString('es-MX');
+  document.getElementById('detailGkm').textContent = Math.round(gPerKm) + ' g';
+  document.getElementById('detailKmYear').textContent = kmYear.toLocaleString('es-MX');
+  document.getElementById('detailLitros').textContent = fuel === 'electrico' ? 'N/A' : Math.round(litrosYear).toLocaleString('es-MX');
+
+  // Equivalences
+  // 1 tree absorbs ~22 kg CO2/year (IPCC)
+  const trees = co2Year / 22;
+  // SJO-MEX flight ≈ 350 kg CO2 per passenger (round trip ~2,200 km)
+  const flights = co2Year / 350;
+  // 1 LED bulb (10W) 24h = 0.24 kWh/day; grid ~0.5 kg CO2/kWh → 0.12 kg CO2/day
+  const ledDays = co2Year / 0.12;
+
+  document.getElementById('eqArboles').textContent = Math.round(trees).toLocaleString('es-MX');
+  document.getElementById('eqVuelos').textContent = flights.toFixed(1);
+  document.getElementById('eqFocos').textContent = Math.round(ledDays).toLocaleString('es-MX');
+
+  // Comparison bars (max = 265 g/km for SUV grande)
+  const maxG = 280;
+  const yourPct = Math.min(100, (gPerKm / maxG) * 100);
+  const avgPct = (170 / maxG) * 100;
+  const suvPct = (265 / maxG) * 100;
+  const evPct = 3;
+
+  document.getElementById('barYours').style.width = Math.max(5, yourPct) + '%';
+  document.getElementById('barYours').textContent = Math.round(gPerKm) + ' g/km';
+  document.getElementById('barAvg').style.width = avgPct + '%';
+  document.getElementById('barAvg').textContent = '170 g/km';
+  document.getElementById('barSuv').style.width = suvPct + '%';
+  document.getElementById('barSuv').textContent = '265 g/km';
+  document.getElementById('barElectric').style.width = evPct + '%';
+  document.getElementById('barElectric').textContent = '0 g/km';
+}
+
+calculate();
+</script>
+</body>
+</html>

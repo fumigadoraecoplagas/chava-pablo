@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlowBot — Cobros Automáticos</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'DM Sans', sans-serif; background: #f0f2f5; min-height: 100vh; color: #1a1a1a; }
+
+        .back-link {
+            position: fixed; top: 20px; left: 20px; z-index: 100;
+            color: #128C7E; text-decoration: none; font-weight: 500; font-size: 14px;
+            background: white; padding: 8px 16px; border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.2s;
+        }
+        .back-link:hover { background: #128C7E; color: white; }
+
+        .main-container {
+            display: flex; height: 100vh; overflow: hidden;
+        }
+
+        /* WhatsApp Chat Side */
+        .chat-side {
+            width: 40%; background: #e5ddd5;
+            display: flex; flex-direction: column;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9c2b8' fill-opacity='0.15'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .chat-header {
+            background: #075E54; color: white; padding: 16px 20px;
+            display: flex; align-items: center; gap: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        }
+        .chat-header .avatar {
+            width: 42px; height: 42px; border-radius: 50%;
+            background: #25D366; display: flex; align-items: center; justify-content: center;
+            font-size: 20px; font-weight: 700;
+        }
+        .chat-header .info h2 { font-size: 16px; font-weight: 600; }
+        .chat-header .info span { font-size: 12px; opacity: 0.85; }
+
+        .chat-messages {
+            flex: 1; padding: 20px; overflow-y: auto;
+            display: flex; flex-direction: column; gap: 8px;
+        }
+
+        .message {
+            max-width: 85%; padding: 8px 12px; border-radius: 8px;
+            font-size: 14px; line-height: 1.45; position: relative;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+        }
+        .message .time {
+            font-size: 11px; color: #667781; margin-top: 4px;
+            text-align: right; display: flex; align-items: center; justify-content: flex-end; gap: 4px;
+        }
+        .message .time .checks { color: #53bdeb; font-size: 14px; }
+
+        .msg-bot { background: #fff; align-self: flex-start; border-top-left-radius: 0; }
+        .msg-user { background: #d9fdd3; align-self: flex-end; border-top-right-radius: 0; }
+
+        .msg-image {
+            background: #d9fdd3; align-self: flex-end; border-top-right-radius: 0;
+            padding: 4px;
+        }
+        .msg-image .image-placeholder {
+            width: 200px; height: 140px; background: #c8e6c9; border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            color: #2e7d32; font-size: 13px; font-weight: 500;
+            flex-direction: column; gap: 6px;
+        }
+        .msg-image .image-placeholder .icon { font-size: 28px; }
+        .msg-image .time { padding: 0 8px 4px; }
+
+        .date-badge {
+            align-self: center; background: #e1f3fb; color: #54656f;
+            padding: 5px 12px; border-radius: 8px; font-size: 12px;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.08); margin: 8px 0;
+        }
+
+        /* Dashboard Side */
+        .dashboard-side {
+            width: 60%; background: #f8fafb; padding: 30px;
+            overflow-y: auto;
+        }
+
+        .dash-header {
+            margin-bottom: 28px;
+        }
+        .dash-header h1 {
+            font-size: 22px; font-weight: 700; color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+        .dash-header p { font-size: 14px; color: #667781; }
+
+        .stats-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+            margin-bottom: 28px;
+        }
+        .stat-card {
+            background: white; border-radius: 12px; padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            border-left: 4px solid #25D366;
+        }
+        .stat-card:nth-child(2) { border-left-color: #128C7E; }
+        .stat-card:nth-child(3) { border-left-color: #075E54; }
+        .stat-card:nth-child(4) { border-left-color: #34B7F1; }
+
+        .stat-card .label { font-size: 12px; color: #667781; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+        .stat-card .value { font-size: 28px; font-weight: 700; color: #1a1a1a; }
+        .stat-card .sub { font-size: 12px; color: #25D366; margin-top: 4px; font-weight: 500; }
+
+        .table-section {
+            background: white; border-radius: 12px; padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        .table-section h3 {
+            font-size: 16px; font-weight: 600; margin-bottom: 16px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .table-section h3 .dot { width: 8px; height: 8px; background: #25D366; border-radius: 50%; animation: pulse 2s infinite; }
+
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #667781; padding: 10px 12px; border-bottom: 2px solid #e9ecef; }
+        td { padding: 12px; font-size: 13px; border-bottom: 1px solid #f0f2f5; }
+
+        .status {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 500;
+        }
+        .status-confirmed { background: #e8f5e9; color: #2e7d32; }
+        .status-pending { background: #fff3e0; color: #e65100; }
+        .status-sent { background: #e3f2fd; color: #1565c0; }
+        .status-read { background: #f3e5f5; color: #7b1fa2; }
+
+        .chart-section {
+            background: white; border-radius: 12px; padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+        .chart-section h3 { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
+
+        .bar-chart { display: flex; align-items: flex-end; gap: 12px; height: 120px; padding-top: 10px; }
+        .bar-col { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
+        .bar {
+            width: 100%; border-radius: 6px 6px 0 0; background: linear-gradient(180deg, #25D366, #128C7E);
+            transition: height 0.5s ease; min-height: 8px;
+        }
+        .bar-col span { font-size: 11px; color: #667781; }
+        .bar-col .bar-val { font-size: 11px; font-weight: 600; color: #1a1a1a; }
+    </style>
+</head>
+<body>
+    <a href="../#portafolio" class="back-link">← Volver al portafolio</a>
+
+    <div class="main-container">
+        <!-- WhatsApp Chat -->
+        <div class="chat-side">
+            <div class="chat-header">
+                <div class="avatar">F</div>
+                <div class="info">
+                    <h2>FlowBot — Cobros Automáticos</h2>
+                    <span>en línea · 147 mensajes hoy</span>
+                </div>
+            </div>
+            <div class="chat-messages">
+                <div class="date-badge">Hoy</div>
+
+                <div class="message msg-bot">
+                    Hola Juan, le recordamos que su factura <strong>#1842</strong> por <strong>$245.00</strong> vence mañana. ¿Desea pagar ahora?
+                    <div class="time">2:31 p.m.</div>
+                </div>
+
+                <div class="message msg-user">
+                    Sí, por SINPE
+                    <div class="time">2:33 p.m. <span class="checks">✓✓</span></div>
+                </div>
+
+                <div class="message msg-bot">
+                    Perfecto. Transfiera a <strong>8888-1234</strong> y envíe el comprobante aquí. Le confirmo en segundos.
+                    <div class="time">2:33 p.m.</div>
+                </div>
+
+                <div class="message msg-image">
+                    <div class="image-placeholder">
+                        <span class="icon">📄</span>
+                        Comprobante.jpg
+                    </div>
+                    <div class="time">2:35 p.m. <span class="checks">✓✓</span></div>
+                </div>
+
+                <div class="message msg-bot">
+                    ✅ Pago verificado. Su factura <strong>#1842</strong> está al día. ¡Gracias!
+                    <div class="time">2:35 p.m.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Dashboard -->
+        <div class="dashboard-side">
+            <div class="dash-header">
+                <h1>Panel de Administración</h1>
+                <p>FlowBot · Martes 15 de abril, 2026 · Última actualización: hace 2 min</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="label">Mensajes enviados hoy</div>
+                    <div class="value">147</div>
+                    <div class="sub">↑ 12% vs ayer</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Pagos confirmados</div>
+                    <div class="value">23</div>
+                    <div class="sub">↑ 8% vs ayer</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Tasa de respuesta</div>
+                    <div class="value">68%</div>
+                    <div class="sub">↑ 3% vs semana</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Monto cobrado</div>
+                    <div class="value">$5,840</div>
+                    <div class="sub">↑ 22% vs ayer</div>
+                </div>
+            </div>
+
+            <div class="chart-section">
+                <h3>Cobros de la semana</h3>
+                <div class="bar-chart">
+                    <div class="bar-col"><div class="bar-val">$3.2k</div><div class="bar" style="height: 55%;"></div><span>Lun</span></div>
+                    <div class="bar-col"><div class="bar-val">$4.1k</div><div class="bar" style="height: 70%;"></div><span>Mar</span></div>
+                    <div class="bar-col"><div class="bar-val">$5.8k</div><div class="bar" style="height: 100%;"></div><span>Mié</span></div>
+                    <div class="bar-col"><div class="bar-val">$4.5k</div><div class="bar" style="height: 78%;"></div><span>Jue</span></div>
+                    <div class="bar-col"><div class="bar-val">$3.9k</div><div class="bar" style="height: 67%;"></div><span>Vie</span></div>
+                    <div class="bar-col"><div class="bar-val">$1.2k</div><div class="bar" style="height: 20%;"></div><span>Sáb</span></div>
+                    <div class="bar-col"><div class="bar-val">—</div><div class="bar" style="height: 3%;"></div><span>Dom</span></div>
+                </div>
+            </div>
+
+            <div class="table-section">
+                <h3><span class="dot"></span> Interacciones recientes</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Mensaje</th>
+                            <th>Estado</th>
+                            <th>Hora</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Juan Méndez</strong></td>
+                            <td>Recordatorio factura #1842</td>
+                            <td><span class="status status-confirmed">✓ Pagado</span></td>
+                            <td>2:35 p.m.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>María López</strong></td>
+                            <td>Recordatorio factura #1839</td>
+                            <td><span class="status status-read">Leído</span></td>
+                            <td>2:20 p.m.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Carlos Rojas</strong></td>
+                            <td>Segundo aviso factura #1815</td>
+                            <td><span class="status status-pending">Pendiente</span></td>
+                            <td>1:45 p.m.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ana Vargas</strong></td>
+                            <td>Confirmación de pago #1830</td>
+                            <td><span class="status status-confirmed">✓ Pagado</span></td>
+                            <td>1:12 p.m.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Roberto Soto</strong></td>
+                            <td>Recordatorio factura #1836</td>
+                            <td><span class="status status-sent">Enviado</span></td>
+                            <td>12:50 p.m.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

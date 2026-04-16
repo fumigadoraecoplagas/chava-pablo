@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BookFlow — Plataforma de Reservas</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:#fdf2f4;color:#1e1e2f;min-height:100vh;display:flex;flex-direction:column}
+a{text-decoration:none;color:inherit}
+
+.back-link{position:fixed;top:16px;left:16px;z-index:999;font-size:13px;color:#e11d63;font-weight:500;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.9);padding:6px 14px;border-radius:20px;box-shadow:0 2px 8px rgba(0,0,0,.08);backdrop-filter:blur(6px)}
+.back-link:hover{background:#fff1f4}
+
+header{background:#fff;border-bottom:1px solid #f3e0e6;padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.logo{font-size:22px;font-weight:700;color:#e11d63;letter-spacing:-.5px}
+.logo span{color:#fb7ea8}
+nav{display:flex;gap:28px}
+nav a{font-size:14px;font-weight:500;color:#6b7280;transition:color .2s}
+nav a:hover,nav a.active{color:#e11d63}
+nav a.active{border-bottom:2px solid #e11d63;padding-bottom:2px}
+.header-right{display:flex;align-items:center;gap:16px}
+.notif{width:36px;height:36px;border-radius:50%;background:#fdf2f4;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;font-size:18px}
+.notif-dot{width:8px;height:8px;background:#e11d63;border-radius:50%;position:absolute;top:6px;right:6px;border:2px solid #fff}
+.avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#e11d63,#fb7ea8);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600}
+
+.main{display:flex;flex:1;overflow:hidden}
+.calendar-panel{flex:1;padding:24px;overflow-y:auto}
+.detail-panel{width:340px;background:#fff;border-left:1px solid #f3e0e6;padding:24px;overflow-y:auto;display:flex;flex-direction:column;gap:20px}
+
+.cal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.cal-header h2{font-size:18px;font-weight:600}
+.cal-nav{display:flex;align-items:center;gap:12px}
+.cal-nav button{width:32px;height:32px;border:1px solid #e5e7eb;border-radius:8px;background:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:#6b7280}
+.cal-nav button:hover{background:#fdf2f4;border-color:#e11d63;color:#e11d63}
+.cal-nav span{font-size:14px;font-weight:500;min-width:180px;text-align:center}
+
+.cal-grid{display:grid;grid-template-columns:60px repeat(7,1fr);background:#fff;border-radius:16px;box-shadow:0 1px 4px rgba(0,0,0,.06);overflow:hidden}
+.cal-day-header{padding:12px 8px;font-size:12px;font-weight:600;text-align:center;color:#6b7280;background:#fafafa;border-bottom:1px solid #f0f0f0}
+.cal-day-header.today{color:#e11d63;background:#fff5f7}
+.time-label{padding:8px 6px;font-size:11px;color:#9ca3af;text-align:right;border-right:1px solid #f0f0f0;border-bottom:1px solid #f8f8f8;height:56px;display:flex;align-items:flex-start;justify-content:flex-end}
+.cal-cell{border-right:1px solid #f8f8f8;border-bottom:1px solid #f8f8f8;height:56px;position:relative;padding:2px}
+.cal-cell:last-child{border-right:none}
+
+.event{border-radius:6px;padding:4px 6px;font-size:10px;font-weight:500;line-height:1.3;position:absolute;left:2px;right:2px;overflow:hidden;cursor:pointer;transition:transform .15s}
+.event:hover{transform:scale(1.03);z-index:2}
+.event.confirmed{background:#fce7ef;color:#be185d;border-left:3px solid #e11d63}
+.event.pending{background:#fef3c7;color:#92400e;border-left:3px solid #f59e0b}
+.event.cancelled{background:#f3f4f6;color:#6b7280;border-left:3px solid #9ca3af;text-decoration:line-through}
+
+.detail-section{background:#fdf2f4;border-radius:14px;padding:18px}
+.detail-section h3{font-size:13px;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
+.next-apt{display:flex;flex-direction:column;gap:10px}
+.apt-client{display:flex;align-items:center;gap:10px}
+.apt-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#e11d63,#fb7ea8);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:15px;flex-shrink:0}
+.apt-name{font-size:15px;font-weight:600}
+.apt-service{font-size:13px;color:#6b7280}
+.apt-meta{display:flex;flex-direction:column;gap:6px;font-size:13px}
+.apt-meta-row{display:flex;align-items:center;gap:8px}
+.apt-meta-row .icon{font-size:16px}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.badge.green{background:#d1fae5;color:#065f46}
+.badge.yellow{background:#fef3c7;color:#92400e}
+.badge.gray{background:#f3f4f6;color:#6b7280}
+
+.upcoming-list{display:flex;flex-direction:column;gap:10px}
+.upcoming-item{display:flex;align-items:center;gap:10px;padding:10px;background:#fff;border-radius:10px;border:1px solid #f3e0e6}
+.upcoming-time{font-size:12px;font-weight:600;color:#e11d63;min-width:50px}
+.upcoming-info{flex:1}
+.upcoming-info .name{font-size:13px;font-weight:500}
+.upcoming-info .svc{font-size:11px;color:#9ca3af}
+
+.stats-bar{background:#fff;border-top:1px solid #f3e0e6;padding:16px 32px;display:flex;gap:24px;justify-content:center;flex-shrink:0}
+.stat-card{background:linear-gradient(135deg,#fdf2f4,#fff5f7);border-radius:14px;padding:16px 28px;text-align:center;flex:1;max-width:260px;border:1px solid #fce7ef}
+.stat-value{font-size:26px;font-weight:700;color:#e11d63}
+.stat-label{font-size:12px;color:#9ca3af;margin-top:2px;font-weight:500}
+
+.legend{display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:#6b7280}
+.legend-dot{width:10px;height:10px;border-radius:3px}
+.legend-dot.c1{background:#e11d63}
+.legend-dot.c2{background:#f59e0b}
+.legend-dot.c3{background:#9ca3af}
+
+@media(max-width:900px){
+  .main{flex-direction:column}
+  .detail-panel{width:100%;border-left:none;border-top:1px solid #f3e0e6}
+  .cal-grid{font-size:10px}
+  .stats-bar{flex-wrap:wrap}
+}
+</style>
+</head>
+<body>
+<a href="../#portafolio" class="back-link">← Volver al portafolio</a>
+<header>
+  <div class="logo">Book<span>Flow</span></div>
+  <nav>
+    <a href="#" class="active">Citas</a>
+    <a href="#">Clientes</a>
+    <a href="#">Configuración</a>
+  </nav>
+  <div class="header-right">
+    <div class="notif">🔔<span class="notif-dot"></span></div>
+    <div class="avatar">MR</div>
+  </div>
+</header>
+
+<div class="main">
+  <div class="calendar-panel">
+    <div class="cal-header">
+      <h2>Agenda Semanal</h2>
+      <div class="cal-nav">
+        <button>‹</button>
+        <span>14 – 20 Abril 2026</span>
+        <button>›</button>
+      </div>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot c1"></div>Confirmada</div>
+      <div class="legend-item"><div class="legend-dot c2"></div>Pendiente</div>
+      <div class="legend-item"><div class="legend-dot c3"></div>Cancelada</div>
+    </div>
+    <div class="cal-grid">
+      <!-- Header row -->
+      <div class="cal-day-header"></div>
+      <div class="cal-day-header">Lun 14</div>
+      <div class="cal-day-header">Mar 15</div>
+      <div class="cal-day-header today">Mié 16</div>
+      <div class="cal-day-header">Jue 17</div>
+      <div class="cal-day-header">Vie 18</div>
+      <div class="cal-day-header">Sáb 19</div>
+      <div class="cal-day-header">Dom 20</div>
+
+      <!-- 8:00 -->
+      <div class="time-label">8:00</div>
+      <div class="cal-cell"><div class="event confirmed" style="top:2px;height:50px">Ana M. — Corte</div></div>
+      <div class="cal-cell"></div>
+      <div class="cal-cell"><div class="event pending" style="top:2px;height:50px">Carlos R. — Barba</div></div>
+      <div class="cal-cell"></div>
+      <div class="cal-cell"><div class="event confirmed" style="top:2px;height:50px">Lucía P. — Corte</div></div>
+      <div class="cal-cell"><div class="event confirmed" style="top:2px;height:50px">Mario V. — Corte</div></div>
+      <div class="cal-cell"></div>
+
+      <!-- 9:00 -->
+      <div class="time-label">9:00</div>
+      <div class="cal-cell"></div>
+      <div class="cal-cell"><div class="event confirmed" style="top:2px;height:50px">José L. — Tinte</div></div>
+      <div class="cal-cell"></div>
+      <div class="cal-cell"><div class="event confirmed" style="top:2px;height:50px">Sofía C. — Corte</div></div>
+      <div class="cal-cell"><div class="event pending" style="top:2px;height:50px">Elena M. — Manicure</div></div>
+      <div class="cal-cell"></div>
+      <div class="cal-cell"></div>
+
+      <!-- 10:00 -->
+      <div class="time-label">10:00</div>
+      <div class="cal-cell"><div class="event confirmed" style="top:2px;height:50px">María G. — Tinte</div></div>
+      <div class="cal-cell"><div class="event cancelled" style="top:2px;height:50px">Pedro S. — Corte</div></div>
+      <div class="cal-cell"><div class="event confirmed" style="top:2px;height:50px">Laura F. — Mechas</div></div>
+      <div class="cal-cell"></div>
+      <div class="cal-cell"><div class="event confirmed" style="top:2px;height:50px">Diana R. — Alisado</div></div>
+      <div class="cal-cell"><div class="event confirmed" style="top:2px;height:50px">Isabel T. — Tinte</div></div>
+      <div class="cal-cell"></div>
+
+      <!-- 11:00 -->
+      <div class="time-label">11:00</div>
+      <div class="cal-cell"></div>
+      <div class="cal-cell"><div class="event confirmed" style="top:2px;height:50px">Andrea V. — Mechas</div></div>
+      <div class="cal-cell"></div>
+      <div class="cal-cell"><div class="event pending" style="top:2px;height:50px">Raúl H. — Barba</div></div>
+      <div class="cal-cell"></div>
+      <div class="cal-cell"></div>
+      <div class="cal-cell"></div>
+
+      <!-- 12:00 -->
+      <div class="time-label">12:00</div>
+      <div class="cal-cell"><div class="event pending" style="top:2px;height:50px">Daniela Q. — Pedicure</div></div>
+      <div class="cal-cell"></div>
+      <div class="cal-cell"><div class="event confirmed" style="top:2px;height:50px">Valeria J. — Corte</div></div>
+      <div class="cal-cell"><div class="event confirmed" style="top:2px;height:50px">Carmen L. — Tinte</div></div>
+      <div class="cal-cell"><div class="event cancelled" style="top:2px;height:50px">Miguel A. — Corte</div></div>
+      <div class="cal-cell"></div>
+      <div class="cal-cell"></div>
+
+      <!-- 1:00 -->
+      <div class="time-label">1:00</div>
+      <div class="cal-cell"></div>
+      <div class="cal-cell"><div class="event confirmed" style="top:2px;height:50px">Rosa M. — Alisado</div></div>
+      <div class="cal-cell"></div>
+      <div class="cal-cell"></div>
+      <div class="cal-cell"><div class="event confirmed" style="top:2px;height:50px">Fernanda S. — Mechas</div></div>
+      <div class="cal-cell"><div class="event pending" style="top:2px;height:50px">Gabriela N. — Corte</div></div>
+      <div class="cal-cell"></div>
+
+      <!-- 2:00 -->
+      <div class="time-label">2:00</div>
+      <div class="cal-cell"><div class="event confirmed" style="top:2px;height:50px">Alejandra B. — Corte</div></div>
+      <div class="cal-cell"></div>
+      <div class="cal-cell"><div class="event confirmed" style="top:2px;height:50px">Ana M. — Corte+Tinte</div></div>
+      <div class="cal-cell"><div class="event pending" style="top:2px;height:50px">Patricia O. — Manicure</div></div>
+      <div class="cal-cell"></div>
+      <div class="cal-cell"><div class="event confirmed" style="top:2px;height:50px">Claudia R. — Tinte</div></div>
+      <div class="cal-cell"></div>
+
+      <!-- 3:00 -->
+      <div class="time-label">3:00</div>
+      <div class="cal-cell"></div>
+      <div class="cal-cell"><div class="event cancelled" style="top:2px;height:50px">Tomás W. — Corte</div></div>
+      <div class="cal-cell"></div>
+      <div class="cal-cell"><div class="event confirmed" style="top:2px;height:50px">Natalia E. — Mechas</div></div>
+      <div class="cal-cell"><div class="event confirmed" style="top:2px;height:50px">Carolina G. — Alisado</div></div>
+      <div class="cal-cell"></div>
+      <div class="cal-cell"></div>
+    </div>
+  </div>
+
+  <div class="detail-panel">
+    <div class="detail-section">
+      <h3>Proxima cita</h3>
+      <div class="next-apt">
+        <div class="apt-client">
+          <div class="apt-avatar">AM</div>
+          <div>
+            <div class="apt-name">Ana Méndez</div>
+            <div class="apt-service">Corte + Tinte</div>
+          </div>
+        </div>
+        <div class="apt-meta">
+          <div class="apt-meta-row"><span class="icon">🕐</span> Hoy, 2:30 PM — 3:30 PM</div>
+          <div class="apt-meta-row"><span class="icon">📍</span> Sede Central</div>
+          <div class="apt-meta-row"><span class="icon">💰</span> ₡18,500</div>
+          <div class="apt-meta-row"><span class="badge green">Confirmada</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h3>Siguientes hoy</h3>
+      <div class="upcoming-list">
+        <div class="upcoming-item">
+          <div class="upcoming-time">3:30</div>
+          <div class="upcoming-info">
+            <div class="name">Valeria Jiménez</div>
+            <div class="svc">Corte</div>
+          </div>
+          <span class="badge green">Conf.</span>
+        </div>
+        <div class="upcoming-item">
+          <div class="upcoming-time">4:00</div>
+          <div class="upcoming-info">
+            <div class="name">Carlos Rojas</div>
+            <div class="svc">Barba</div>
+          </div>
+          <span class="badge yellow">Pend.</span>
+        </div>
+        <div class="upcoming-item">
+          <div class="upcoming-time">4:45</div>
+          <div class="upcoming-info">
+            <div class="name">Laura Fernández</div>
+            <div class="svc">Mechas</div>
+          </div>
+          <span class="badge green">Conf.</span>
+        </div>
+        <div class="upcoming-item">
+          <div class="upcoming-time">5:30</div>
+          <div class="upcoming-info">
+            <div class="name">Sofía Castro</div>
+            <div class="svc">Alisado</div>
+          </div>
+          <span class="badge green">Conf.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h3>Notas recientes</h3>
+      <p style="font-size:13px;color:#6b7280;line-height:1.5">Ana prefiere productos sin amoniaco. Última visita: 12 marzo 2026. Cliente frecuente — aplicar 10% descuento.</p>
+    </div>
+  </div>
+</div>
+
+<div class="stats-bar">
+  <div class="stat-card">
+    <div class="stat-value">28</div>
+    <div class="stat-label">Citas esta semana</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">78%</div>
+    <div class="stat-label">Tasa de ocupación</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">$1,240</div>
+    <div class="stat-label">Ingresos semana</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">4.8 ★</div>
+    <div class="stat-label">Calificación promedio</div>
+  </div>
+</div>
+</body>
+</html>
