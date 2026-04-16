@@ -450,6 +450,7 @@ body .section:not(.section-dark):not(.section-alt):not(.section-gradient):not(.s
 .app-name{display:block;margin-top:10px;font-size:.78rem;font-weight:700;color:#fff;text-align:center;line-height:1.3}
 .app-desc{display:block;margin-top:3px;font-size:.68rem;color:#94a3b8;text-align:center;line-height:1.4}
 .app-icon-mx{background:linear-gradient(135deg,#10b981,#059669)}
+.app-icon-liq{background:linear-gradient(135deg,#f59e0b,#d97706)}
 .app-icon-co2{background:linear-gradient(135deg,#34d399,#065f46)}
 
 /* ===== FAQ ===== */
